@@ -6,20 +6,13 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    private string buttonID;
-    private List<string> playerInput = new(); 
     private void Start()
     {
-        buttonID = GetComponent<ButtonID>().buttonID;
     }
 
-    public void GetButtonInput()
+    public void GetButtonInput(string id)
     {
-        playerInput.Add(buttonID);
+        GameManager.Instance.CompareInputWithSequence(id);
     }
-
-    private void CompareInputWithSequence()
-    {
-        
-    }
+    
 }
