@@ -45,8 +45,8 @@ public class Timer : MonoBehaviour
         
         float minutes = timeValue / 60;
         float seconds = timeValue % 60;
-        
-        
+
+
         timerText.text = string.Format("{0:00}", seconds);
     }
 
@@ -54,8 +54,8 @@ public class Timer : MonoBehaviour
     {
         float minutes = timeValue / 60;
         float seconds = timeValue % 60;
-        
-        var result = string.Format("{0:00}", seconds);
+
+        var result = string.Format("{0:00}" , seconds);
 
         return result;
     }

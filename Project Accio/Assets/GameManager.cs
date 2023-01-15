@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,8 +22,13 @@ public class GameManager : MonoBehaviour
     }
 
     public List<string> currentSequence = new();
+    public List<Image> currentItemImage = new();
     private string currentSequenceItem;
     private int item = 0;
+
+    public HealthManager healthManager;
+    public Timer timer;
+    
     private void Awake()
     {
         instance = this;
@@ -30,10 +36,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        currentSequence.Add("left");
-        currentSequence.Add("right");
-        currentSequence.Add("down");
-        currentSequence.Add("up");
     }
 
     private void Update()
@@ -46,14 +48,18 @@ public class GameManager : MonoBehaviour
         if (buttonID == currentSequenceItem)
         {
             Debug.Log("Dasright!");
+            currentItemImage[item].color = Color.green;
             item++;
         }
         else
         {
             Debug.Log("Stupid idiot!");
+            healthManager.TakeDamage(float.Parse(timer.GetCurrentTime()) / 100);
+            currentItemImage[item].color = Color.red;
             item++;
         }
     }
+    
 
 
 }
