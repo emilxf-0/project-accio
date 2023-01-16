@@ -1,18 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+
 using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    private void Start()
-    {
-    }
-
     public void GetButtonInput(string id)
     {
         GameManager.Instance.CompareInputWithSequence(id);
     }
+
+    public void CompareTimeStamps()
+    {
+        GameManager.Instance.CompareTimeStamps();
+    }
+
+    public void ResetTimer()
+    {
+        GameManager.Instance.ResetTimer();
+    }
+    
     
 }

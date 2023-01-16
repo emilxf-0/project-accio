@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,5 +26,10 @@ public class HealthManager : MonoBehaviour
     public void TakeDamage(float damageTaken)
     {
         currentHealth -= damageTaken;
+    }
+
+    public void Heal(float hpToHeal)
+    {
+        currentHealth += hpToHeal;
     }
 }

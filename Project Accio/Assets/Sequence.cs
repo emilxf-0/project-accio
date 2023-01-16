@@ -51,4 +51,14 @@ public class Sequence : MonoBehaviour
 
         }
     }
+
+    public void DestroySequence()
+    {
+        foreach (Transform child in sequenceTransform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+    
+    
 }
