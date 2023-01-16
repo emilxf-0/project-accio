@@ -17,6 +17,11 @@ public class InputHandler : MonoBehaviour
     {
         GameManager.Instance.ResetTimer();
     }
+
+    public void ResetGame()
+    {
+        GameManager.Instance.ResetGame();
+    }
     
     
 }
