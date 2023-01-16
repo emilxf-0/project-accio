@@ -19,9 +19,9 @@ public class Timer : MonoBehaviour
 
     private void Update()
     {
-        if (timeValue > 0 && timerOn)
+        if (timerOn)
         {
-            timeValue -= Time.deltaTime;
+            timeValue += Time.deltaTime;
         }
         else
         {
@@ -33,37 +33,21 @@ public class Timer : MonoBehaviour
 
     private void DisplayTime(float timeToDisplay)
     {
-        if (timeToDisplay < 0)
-        {
-            timeToDisplay = 0;
-        }
-
-        if (timeToDisplay <= 10f)
-        {
-            timerText.color = Color.red;
-        }
-        
-        float minutes = timeValue / 60;
         float seconds = timeValue % 60;
-
-
+        
         timerText.text = string.Format("{0:00}", seconds);
     }
 
-    public string GetCurrentTime()
+    public float GetCurrentTime()
     {
-        float minutes = timeValue / 60;
         float seconds = timeValue % 60;
 
-        var result = string.Format("{0:00}" , seconds);
-
-        return result;
+        return seconds;
     }
 
-    public void ResetTimer()
+    public void Reset()
     {
-        timeValue = playerTime;
-        timerText.color = Color.white;
+        timeValue = 0;
     }
     
 }
