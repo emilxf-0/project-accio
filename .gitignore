@@ -76,6 +76,7 @@ crashlytics-build.properties
 
 # Firebase
 *google-services*
+*FirebaseCppApp*
 
 # Other
 .vscode/
