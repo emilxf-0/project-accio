@@ -43,17 +43,20 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        currentSequenceItem = currentSequence[item];
+        if (SceneManager.GetSceneByName("MainMenu").isLoaded == false)
+        {
+            currentSequenceItem = currentSequence[item];
+        }
     }
 
     private void OnEnable()
     {
-        HealthManager.playerDeath += PlayerDeath;
+        HealthManager.PlayerDeath += PlayerDeath;
     }
 
     private void OnDisable()
     {
-        HealthManager.playerDeath -= PlayerDeath;
+        HealthManager.PlayerDeath -= PlayerDeath;
     }
 
     public void CompareInputWithSequence(string buttonID)

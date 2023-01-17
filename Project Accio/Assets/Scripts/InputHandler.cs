@@ -1,8 +1,12 @@
 
+using TMPro;
 using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
+    [SerializeField] private TMP_Text userEmail;
+    [SerializeField] private TMP_Text userPassword;
+    
     public void GetButtonInput(string id)
     {
         GameManager.Instance.CompareInputWithSequence(id);
@@ -22,6 +26,19 @@ public class InputHandler : MonoBehaviour
     {
         GameManager.Instance.ResetGame();
     }
-    
-    
+
+    public void RegNewUser()
+    {
+        var email = userEmail.text;
+        var password = userPassword.text;
+        DatabaseAPI.Instance.RegisterNewUser(email, password);
+    }
+
+    public void SignInUser()
+    {
+        var email = userEmail.text;
+        var password = userPassword.text;
+        DatabaseAPI.Instance.SignIn(email, password);
+    }
+
 }

@@ -12,8 +12,8 @@ public class HealthManager : MonoBehaviour
     public float playerHealth;
     public float currentHealth;
 
-    public static event Action playerDeath; 
-    // Start is called before the first frame update
+    public static event Action PlayerDeath; 
+    
     void Start()
     {
         slider.value = maxHealth;
@@ -21,7 +21,7 @@ public class HealthManager : MonoBehaviour
         playerHealth = maxHealth;
     }
 
-    // Update is called once per frame
+   
     void Update()
     {
         slider.value = currentHealth;
@@ -34,7 +34,7 @@ public class HealthManager : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            playerDeath.Invoke();
+            PlayerDeath.Invoke();
         }
     }
 
