@@ -32,13 +32,9 @@ public class SceneHandler : MonoBehaviour
 
     public void LoginSuccessful()
     {
-        SceneManager.LoadScene("GamePlay");
+        SceneManager.LoadScene("MatchMaking");
     }
-
-    public void GoToSignIn()
-    {
-        SceneManager.LoadScene("SignUp");
-    }
+    
 
     public void ConnectToGame()
     {

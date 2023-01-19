@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SaveData : MonoBehaviour
+public class PlayerHandler : MonoBehaviour
 {
     private const string PLAYER_COLOR = "PLAYER_COLOR";
 
@@ -15,11 +15,15 @@ public class SaveData : MonoBehaviour
     public Slider slider;
     public Image playerColor;
 
+    public string playerID;
+
     private void Awake()
     {
         slider.onValueChanged.AddListener(delegate { SetColor(); });
         DatabaseAPI.Instance.LoadFromFirebase();
     }
+
+   
 
     public void LoadColor(string color)
     {

@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        DatabaseAPI.Instance.SetPlayerID();
         //DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
     }
 
@@ -66,7 +67,6 @@ public class GameManager : MonoBehaviour
             currentSequenceItem = currentSequence[item];
         }
         
-        Debug.Log("PlayerID is: " + playerID);
     }
 
     private void OnEnable()

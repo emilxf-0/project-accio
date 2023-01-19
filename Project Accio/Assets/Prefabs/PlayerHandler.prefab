@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2724547513616458737}
   - component: {fileID: -4381672537672917568}
   m_Layer: 5
-  m_Name: SaveData
+  m_Name: PlayerHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,5 +50,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   welcomeMessage: {fileID: 0}
-  slider: {fileID: 6339619113814118990, guid: 292e68c8ad230ef4db0d877e8795402e, type: 3}
-  playerColor: {fileID: 5142729742444056457, guid: 6ce1ca48bb5c66d4bb183f619d46bf51, type: 3}
+  slider: {fileID: 0}
+  playerColor: {fileID: 0}

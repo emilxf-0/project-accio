@@ -25,7 +25,7 @@ public class DatabaseAPI : MonoBehaviour
     }
     
     public static event Action LoginSuccessful;
-    public SaveData saveData;
+    public PlayerHandler playerHandler;
     
     FirebaseAuth auth;
     private FirebaseDatabase db;
@@ -34,14 +34,15 @@ public class DatabaseAPI : MonoBehaviour
     {
         instance = this;
         
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.Exception != null)
-                Debug.LogError(task.Exception);
-        
+        // FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        // {
+        //     if (task.Exception != null)
+        //         Debug.LogError(task.Exception);
+        //     
+        // });
+            
             auth = FirebaseAuth.DefaultInstance;
             db = FirebaseDatabase.DefaultInstance;
-        });
             
             if (db != null)
             {
@@ -64,10 +65,7 @@ public class DatabaseAPI : MonoBehaviour
         {
             DataTest(auth.CurrentUser.UserId, Random.Range(0, 100).ToString());
         }
-        
-        //TODO Move this to a better place (i.e after login is done)
-        //GameManager.Instance.playerID = auth.CurrentUser.UserId;
-        
+
     }
 
     public void AnonymousSignIn()
@@ -165,7 +163,7 @@ public class DatabaseAPI : MonoBehaviour
 
             //And send the json data to a function that can update our game.
             Debug.Log(snap.GetRawJsonValue());
-            saveData.LoadColor(snap.GetRawJsonValue());
+            playerHandler.LoadColor(snap.GetRawJsonValue());
 
         });
     }
@@ -217,5 +215,10 @@ public class DatabaseAPI : MonoBehaviour
         
         GameManager.Instance.CompareTimeStamps(enemyReactionTime);
         
+    }
+
+    public void SetPlayerID()
+    {
+        GameManager.Instance.playerID = auth.CurrentUser.UserId;
     }
 }
