@@ -9,6 +9,10 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private TMP_Text userPassword;
     [SerializeField] private GameObject loginPanel;
     
+    [SerializeField] private TMP_Text signupEmail;
+    [SerializeField] private TMP_Text signupPassword;
+    [SerializeField] private GameObject signupPanel;
+    
     public void GetButtonInput(string id)
     {
         GameManager.Instance.CompareInputWithSequence(id);
@@ -31,8 +35,8 @@ public class InputHandler : MonoBehaviour
 
     public void RegNewUser()
     {
-        var email = userEmail.text;
-        var password = userPassword.text;
+        var email = signupEmail.text;
+        var password = signupPassword.text;
         DatabaseAPI.Instance.RegisterNewUser(email, password);
     }
 
@@ -53,14 +57,34 @@ public class InputHandler : MonoBehaviour
         }, exception => { Debug.Log(exception); });
     }
 
-    public void ShowLoginScreen()
+    public void ShowPanel(string panelName)
     {
-        loginPanel.SetActive(true);
+        Debug.Log(nameof(loginPanel));
+        switch (panelName)
+        {
+            case nameof(loginPanel):
+                loginPanel.SetActive(true);
+                break;
+            
+            case nameof(signupPanel):
+                signupPanel.SetActive(true);
+                break;
+        }
+        
     }
 
-    public void HideLoginScreen()
+    public void HidePanel(string panelName)
     {
-        loginPanel.SetActive(false);
+        switch (panelName)
+        {
+            case nameof(loginPanel):
+                loginPanel.SetActive(false);
+                break;
+            
+            case nameof(signupPanel):
+                signupPanel.SetActive(false);
+                break;
+        }
     }
 
 }
