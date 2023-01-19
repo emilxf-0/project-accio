@@ -25,7 +25,7 @@ public class InputHandler : MonoBehaviour
 
     public void PlayWithoutLoggingIn()
     {
-        DatabaseAPI.Instance.AnonymousSignIn();
+        DatabaseAPI.Instance.SimpleSignIn();
     }
 
     public void ResetTimer()
@@ -92,7 +92,7 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    public void QuitGame()
+    public void SignOutFromGame()
     {
         DatabaseAPI.Instance.SignOut();
     }

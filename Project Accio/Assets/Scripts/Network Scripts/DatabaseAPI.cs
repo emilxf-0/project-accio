@@ -51,15 +51,12 @@ public class DatabaseAPI : MonoBehaviour
             }
     }
     
-    void Start()
-    {
-        Debug.Log("Current user is " + auth.CurrentUser.UserId);
-    }
+   
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
-            AnonymousSignIn();
+            SimpleSignIn();
 
         if (Input.GetKeyDown(KeyCode.D))
         {
@@ -68,9 +65,16 @@ public class DatabaseAPI : MonoBehaviour
 
     }
 
-    public void AnonymousSignIn()
+    public void SimpleSignIn()
     {
-        auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task => {
+        // If user already have a userid just let them pass
+        if (auth.CurrentUser != null)
+        {
+            LoginSuccessful.Invoke();
+        }
+        else 
+        {
+            auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task => {
             if (task.Exception != null)
             {
                 Debug.LogWarning(task.Exception);
@@ -83,14 +87,11 @@ public class DatabaseAPI : MonoBehaviour
                 
                 LoginSuccessful.Invoke();
             }
-        });
+            });
+            
+        }
     }
-
-    public void SignOutFromGame()
-    {
-        auth.SignOut();
-        Debug.LogFormat("User " + auth.CurrentUser.UserId + " signed out");
-    }
+    
 
     private void DataTest(string userID, string data)
     {
@@ -143,8 +144,8 @@ public class DatabaseAPI : MonoBehaviour
 
     public void SignOut()
     {
+        Debug.Log("User" + auth.CurrentUser.UserId + " signed out");
         auth.SignOut();
-        Debug.Log("User signed out");
     }
     
     public void SaveToFirebase(string data)
