@@ -14,7 +14,7 @@ public class InputHandler : MonoBehaviour
 
     public void CompareTimeStamps()
     {
-        GameManager.Instance.CompareTimeStamps();
+        //GameManager.Instance.CompareTimeStamps();
     }
 
     public void ResetTimer()
@@ -44,8 +44,8 @@ public class InputHandler : MonoBehaviour
     public void SendAction()
     {
         var playerReaction = GameManager.Instance.GetHitPoints();
-        
-        DatabaseAPI.Instance.SendAction(new PlayerInfo("emil", playerReaction), () =>
+        var playerID = GameManager.Instance.playerID;
+        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction), () =>
         {
             // Action was sent!
         }, exception => { Debug.Log(exception); });
