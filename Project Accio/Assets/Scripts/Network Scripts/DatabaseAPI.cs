@@ -1,4 +1,5 @@
 using System;
+using Firebase;
 using UnityEngine;
 using Firebase.Database;
 using Firebase.Extensions;
@@ -16,7 +17,7 @@ public class DatabaseAPI : MonoBehaviour
         {
             if (instance == null)
             {
-                Debug.Log("Game manager doesn't exist");
+                Debug.Log("DatabaseAPI doesn't exist");
             }
             
             return instance;
@@ -33,14 +34,14 @@ public class DatabaseAPI : MonoBehaviour
     {
         instance = this;
         
-        // FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        // {
-        //     if (task.Exception != null)
-        //         Debug.LogError(task.Exception);
-        //
-        // });
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+                Debug.LogError(task.Exception);
+        
             auth = FirebaseAuth.DefaultInstance;
             db = FirebaseDatabase.DefaultInstance;
+        });
             
             if (db != null)
             {

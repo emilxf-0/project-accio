@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        //TODO add this to a sequence handler
         if (SceneManager.GetSceneByName("GamePlay").isLoaded == true)
         {
             currentSequenceItem = currentSequence[item];
