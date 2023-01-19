@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05d8a6cc6c6ca2e4aaf131f567533d43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 
   currentSequence: []
   currentItemImage: []
   gameOver: {fileID: 0}

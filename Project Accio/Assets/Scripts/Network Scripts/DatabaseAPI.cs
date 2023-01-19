@@ -6,6 +6,7 @@ using Firebase;
 using Firebase.Database;
 using Firebase.Extensions;
 using Firebase.Auth;
+using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 
 public class DatabaseAPI : MonoBehaviour
@@ -36,11 +37,12 @@ public class DatabaseAPI : MonoBehaviour
     {
         instance = this;
         
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.Exception != null)
-                Debug.LogError(task.Exception);
-        
+        // FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        // {
+        //     if (task.Exception != null)
+        //         Debug.LogError(task.Exception);
+        //
+        // });
             auth = FirebaseAuth.DefaultInstance;
             db = FirebaseDatabase.DefaultInstance;
             
@@ -48,7 +50,6 @@ public class DatabaseAPI : MonoBehaviour
             {
                 ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
             }
-        });
     }
     
     void Start()
@@ -64,8 +65,9 @@ public class DatabaseAPI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             DataTest(auth.CurrentUser.UserId, Random.Range(0, 100).ToString());
-            GameManager.Instance.playerID = auth.CurrentUser.UserId;
         }
+        
+        GameManager.Instance.playerID = auth.CurrentUser.UserId;
         
     }
 
@@ -201,8 +203,16 @@ public class DatabaseAPI : MonoBehaviour
     
     private void InstantiateEnemyAction(PlayerInfo playerInfo)
     {
-        var playerName = $"{playerInfo.playerName}";
-        var playerReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
+        var playerID = $"{playerInfo.playerID}";
+        var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
         var correctInput = Convert.ToBoolean($"{playerInfo.correctInput}");
+
+        if (playerID == GameManager.Instance.playerID)
+        {
+            return;
+        }
+        
+        GameManager.Instance.CompareTimeStamps(enemyReactionTime);
+        
     }
 }

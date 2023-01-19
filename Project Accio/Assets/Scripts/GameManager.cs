@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public string playerID;
+    public string playerID = "187";
 
     public List<string> currentSequence = new();
     public List<Image> currentItemImage = new();
@@ -41,14 +41,13 @@ public class GameManager : MonoBehaviour
     
     private void Awake()
     {
-        if (instance == null)
+        if (instance != null && instance != this)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
+            instance = this;
         }
     }
 
@@ -61,7 +60,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (SceneManager.GetSceneByName("MainMenu").isLoaded == false)
+        if (SceneManager.GetSceneByName("GamePlay").isLoaded == true)
         {
             currentSequenceItem = currentSequence[item];
         }
@@ -109,10 +108,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CompareTimeStamps()
+    public void CompareTimeStamps(float enemyTimeStamp)
     {
-        var player = GetHitPoints(); 
-        var enemy = EnemyHitPoints();
+        var player = GetHitPoints();
+        var enemy = enemyTimeStamp;
 
         var hitPoints = Mathf.Abs(player - enemy);
         

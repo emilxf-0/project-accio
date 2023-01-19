@@ -2348,10 +2348,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -8118432545377107524, guid: c46b05943b7aad54cb83b7e69fb7cffb, type: 3}
     - target: {fileID: 7337436955654438565, guid: d248d6f8075bc1f4b95a5e995950618a, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: SendAction
-      objectReference: {fileID: 0}
-    - target: {fileID: 7337436955654438565, guid: d248d6f8075bc1f4b95a5e995950618a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
       value: ResetTimer
       objectReference: {fileID: 0}

@@ -6,13 +6,13 @@ using UnityEngine;
 [Serializable]
 public class PlayerInfo
 {
-    public string playerName;
+    public string playerID;
     public float playerReactionTime;
     public bool correctInput;
     
-    public PlayerInfo(string playerName, float playerReactionTime)
+    public PlayerInfo(string playerID, float playerReactionTime)
     {
-        this.playerName = playerName;
+        this.playerID = playerID;
         this.playerReactionTime = playerReactionTime;
     }
 
