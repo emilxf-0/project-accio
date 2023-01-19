@@ -1,11 +1,13 @@
 
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
     [SerializeField] private TMP_Text userEmail;
     [SerializeField] private TMP_Text userPassword;
+    [SerializeField] private GameObject loginPanel;
     
     public void GetButtonInput(string id)
     {
@@ -49,6 +51,16 @@ public class InputHandler : MonoBehaviour
         {
             // Action was sent!
         }, exception => { Debug.Log(exception); });
+    }
+
+    public void ShowLoginScreen()
+    {
+        loginPanel.SetActive(true);
+    }
+
+    public void HideLoginScreen()
+    {
+        loginPanel.SetActive(false);
     }
 
 }
