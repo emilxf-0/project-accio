@@ -23,6 +23,11 @@ public class InputHandler : MonoBehaviour
         //GameManager.Instance.CompareTimeStamps();
     }
 
+    public void PlayWithoutLoggingIn()
+    {
+        DatabaseAPI.Instance.AnonymousSignIn();
+    }
+
     public void ResetTimer()
     {
         GameManager.Instance.ResetTimer();
