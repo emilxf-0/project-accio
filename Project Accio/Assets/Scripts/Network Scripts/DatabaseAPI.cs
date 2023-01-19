@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Firebase;
 using Firebase.Database;
 using Firebase.Extensions;
 using Firebase.Auth;
-using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 
 public class DatabaseAPI : MonoBehaviour
@@ -48,7 +44,8 @@ public class DatabaseAPI : MonoBehaviour
             
             if (db != null)
             {
-                ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+                //TODO move this to Game manager
+                //ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
             }
     }
     
@@ -67,7 +64,8 @@ public class DatabaseAPI : MonoBehaviour
             DataTest(auth.CurrentUser.UserId, Random.Range(0, 100).ToString());
         }
         
-        GameManager.Instance.playerID = auth.CurrentUser.UserId;
+        //TODO Move this to a better place (i.e after login is done)
+        //GameManager.Instance.playerID = auth.CurrentUser.UserId;
         
     }
 
@@ -200,6 +198,8 @@ public class DatabaseAPI : MonoBehaviour
         db.RootReference.Child("game session").ChildAdded += CurrentListener;
 
     }
+    
+    //TODO move this to Gamemanager
     
     private void InstantiateEnemyAction(PlayerInfo playerInfo)
     {
