@@ -92,4 +92,9 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    public void QuitGame()
+    {
+        DatabaseAPI.Instance.SignOut();
+    }
+
 }

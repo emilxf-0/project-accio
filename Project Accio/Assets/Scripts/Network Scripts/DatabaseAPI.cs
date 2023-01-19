@@ -53,7 +53,7 @@ public class DatabaseAPI : MonoBehaviour
     
     void Start()
     {
-
+        Debug.Log("Current user is " + auth.CurrentUser.UserId);
     }
 
     private void Update()
@@ -84,6 +84,12 @@ public class DatabaseAPI : MonoBehaviour
                 LoginSuccessful.Invoke();
             }
         });
+    }
+
+    public void SignOutFromGame()
+    {
+        auth.SignOut();
+        Debug.LogFormat("User " + auth.CurrentUser.UserId + " signed out");
     }
 
     private void DataTest(string userID, string data)
