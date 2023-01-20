@@ -79,12 +79,12 @@ public class GameManager : MonoBehaviour
         var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
         //var correctInput = Convert.ToBoolean($"{playerInfo.correctInput}");
 
-        if (playerID == GameManager.Instance.playerID)
+        if (this.playerID == playerID)
         {
             return;
         }
         
-        GameManager.Instance.CompareTimeStamps(enemyReactionTime);
+        CompareTimeStamps(enemyReactionTime);
         
     }
 
@@ -137,11 +137,11 @@ public class GameManager : MonoBehaviour
         
         if (player > enemy || inputMatchSequence == false)
         {
-            healthManager.TakeDamage(hitPoints);
+            healthManager.TakeDamage(0.1f);
         }
         else
         {
-            healthManager.Heal(hitPoints);
+            healthManager.Heal(0.05f);
         }
     }
     
@@ -165,7 +165,7 @@ public class GameManager : MonoBehaviour
 
     public float GetHitPoints()
     {
-        return timer.GetCurrentTime() / 8;
+        return timer.GetCurrentTime();
     }
 
     //TODO make this dynamic

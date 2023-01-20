@@ -2536,6 +2536,10 @@ PrefabInstance:
       propertyPath: timerText
       value: 
       objectReference: {fileID: 629137331}
+    - target: {fileID: 5811645496435680492, guid: 6df379caaf9d1344faa7f6fcc08edc63, type: 3}
+      propertyPath: playerTime
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5811645496435680493, guid: 6df379caaf9d1344faa7f6fcc08edc63, type: 3}
       propertyPath: m_RootOrder
       value: 3
