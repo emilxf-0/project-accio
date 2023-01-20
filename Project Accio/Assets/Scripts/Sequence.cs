@@ -75,7 +75,7 @@ public class Sequence : MonoBehaviour
             currentItemImage[item].color = Color.red;
         }
         
-        Invoke(nameof(UpdateSequence), 0.2f);
+        UpdateSequence();
     }
 
     public void UpdateSequence()
@@ -87,7 +87,7 @@ public class Sequence : MonoBehaviour
         else
         {
             item = 0;
-            NewSequence();
+            Invoke(nameof(NewSequence), 0.2f);
         }
     }
     
