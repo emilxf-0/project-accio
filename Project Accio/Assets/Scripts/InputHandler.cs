@@ -15,7 +15,7 @@ public class InputHandler : MonoBehaviour
     
     public void GetButtonInput(string id)
     {
-        GameManager.Instance.CompareInputWithSequence(id);
+        GameManager.Instance.sequence.CompareInputWithSequence(id);
     }
 
     public void CompareTimeStamps()

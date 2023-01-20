@@ -25,14 +25,7 @@ public class GameManager : MonoBehaviour
     }
 
     public string playerID = "187";
-
-    public List<string> currentSequence = new();
-    public List<Image> currentItemImage = new();
     
-    private string currentSequenceItem;
-    private int item = 0;
-    private bool inputMatchSequence;
-
     public GameObject gameOver;
     public HealthManager healthManager;
     public Sequence sequence;
@@ -50,6 +43,16 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
     }
+    
+    private void OnEnable()
+    {
+        HealthManager.PlayerDeath += PlayerDeath;
+    }
+
+    private void OnDisable()
+    {
+        HealthManager.PlayerDeath -= PlayerDeath;
+    }
 
     private void Start()
     {
@@ -58,15 +61,8 @@ public class GameManager : MonoBehaviour
         DatabaseAPI.Instance.isListening = true;
     }
 
-    
-
     private void Update()
     {
-        //TODO add this to a sequence handler
-        if (SceneManager.GetSceneByName("GamePlay").isLoaded == true)
-        {
-            currentSequenceItem = currentSequence[item];
-        }
         if (Input.GetKeyDown(KeyCode.B))
         {
             DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
@@ -87,47 +83,7 @@ public class GameManager : MonoBehaviour
         CompareTimeStamps(enemyReactionTime);
         
     }
-
-    private void OnEnable()
-    {
-        HealthManager.PlayerDeath += PlayerDeath;
-    }
-
-    private void OnDisable()
-    {
-        HealthManager.PlayerDeath -= PlayerDeath;
-    }
-
-    public void CompareInputWithSequence(string buttonID)
-    {
-        
-        if (buttonID == currentSequenceItem)
-        {
-            inputMatchSequence = true;
-            currentItemImage[item].color = Color.green;
-        }
-        else
-        {
-            inputMatchSequence = false;
-            currentItemImage[item].color = Color.red;
-        }
-        
-        Invoke(nameof(UpdateSequence), 0.2f);
-    }
-
-    public void UpdateSequence()
-    {
-        if (item != currentSequence.Count - 1)
-        {
-            item++;
-        }
-        else
-        {
-            item = 0;
-            NewSequence();
-        }
-    }
-
+    
     public void CompareTimeStamps(float enemyTimeStamp)
     {
         var player = GetHitPoints();
@@ -135,7 +91,7 @@ public class GameManager : MonoBehaviour
 
         var hitPoints = Mathf.Abs(player - enemy);
         
-        if (player > enemy || inputMatchSequence == false)
+        if (player > enemy || sequence.inputMatchSequence == false)
         {
             healthManager.TakeDamage(0.1f);
         }
@@ -155,7 +111,7 @@ public class GameManager : MonoBehaviour
     {
         healthManager.currentHealth = healthManager.maxHealth;
         gameOver.SetActive(false);
-        NewSequence();
+        sequence.NewSequence();
     }
 
     public void ResetTimer()
@@ -168,19 +124,13 @@ public class GameManager : MonoBehaviour
         return timer.GetCurrentTime();
     }
 
-    //TODO make this dynamic
+    //This is for SinglePlayer mode
     public float EnemyHitPoints()
     {
         var hitPoints = 0.1f;
         return hitPoints;
     }
 
-    public void NewSequence()
-    {
-        currentSequence.Clear();
-        currentItemImage.Clear();
-        sequence.DestroySequence();
-        sequence.CreateSequence(4);
-    }
+    
     
 }
