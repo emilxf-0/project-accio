@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Firebase;
+using UnityEngine;
 using Firebase.Database;
 using Firebase.Extensions;
 using Firebase.Auth;
-using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class DatabaseAPI : MonoBehaviour
@@ -20,15 +18,19 @@ public class DatabaseAPI : MonoBehaviour
         {
             if (instance == null)
             {
-                Debug.Log("Game manager doesn't exist");
+                Debug.Log("DatabaseAPI doesn't exist");
             }
             
             return instance;
         }
     }
     
+    public delegate void OnLoadedDelegate(string jsonData);
+
+    public bool isListening;
+    
     public static event Action LoginSuccessful;
-    public SaveData saveData;
+    public PlayerHandler playerHandler;
     
     FirebaseAuth auth;
     private FirebaseDatabase db;
@@ -41,39 +43,63 @@ public class DatabaseAPI : MonoBehaviour
         // {
         //     if (task.Exception != null)
         //         Debug.LogError(task.Exception);
-        //
+        //     
         // });
+            
             auth = FirebaseAuth.DefaultInstance;
             db = FirebaseDatabase.DefaultInstance;
             
-            if (db != null)
-            {
-                ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
-            }
+            
+            
     }
     
-    void Start()
-    {
-
-    }
+    
+   
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
-            AnonymousSignIn();
+            SimpleSignIn();
 
         if (Input.GetKeyDown(KeyCode.D))
         {
             DataTest(auth.CurrentUser.UserId, Random.Range(0, 100).ToString());
         }
         
-        GameManager.Instance.playerID = auth.CurrentUser.UserId;
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            LoadDataMultiple("game session/");
+        }
+
         
     }
 
-    private void AnonymousSignIn()
+    public void LoadDataMultiple(string path)
     {
-        auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task => {
+        db.RootReference.Child(path).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            string jsonData = task.Result.GetRawJsonValue();
+
+            if (task.Exception != null)
+                Debug.LogWarning(task.Exception);
+
+            foreach (var item in task.Result.Children)
+            {
+                Debug.Log(item.GetRawJsonValue());
+            }
+        });
+    }
+
+    public void SimpleSignIn()
+    {
+        // If user already have a userid just let them pass
+        if (auth.CurrentUser != null)
+        {
+            LoginSuccessful.Invoke();
+        }
+        else 
+        {
+            auth.SignInAnonymouslyAsync().ContinueWithOnMainThread(task => {
             if (task.Exception != null)
             {
                 Debug.LogWarning(task.Exception);
@@ -83,9 +109,14 @@ public class DatabaseAPI : MonoBehaviour
                 FirebaseUser newUser = task.Result;
                 Debug.LogFormat("User signed in successfully: {0} ({1})",
                     newUser.DisplayName, newUser.UserId);
+                
+                LoginSuccessful.Invoke();
             }
-        });
+            });
+            
+        }
     }
+    
 
     private void DataTest(string userID, string data)
     {
@@ -138,8 +169,8 @@ public class DatabaseAPI : MonoBehaviour
 
     public void SignOut()
     {
+        Debug.Log("User" + auth.CurrentUser.UserId + " signed out");
         auth.SignOut();
-        Debug.Log("User signed out");
     }
     
     public void SaveToFirebase(string data)
@@ -164,17 +195,17 @@ public class DatabaseAPI : MonoBehaviour
 
             //And send the json data to a function that can update our game.
             Debug.Log(snap.GetRawJsonValue());
-            saveData.LoadColor(snap.GetRawJsonValue());
+            playerHandler.LoadColor(snap.GetRawJsonValue());
 
         });
     }
 
     public void SendAction(PlayerInfo playerInfo, Action callback, Action<AggregateException> fallback)
     {
-        var gameSession = "123456";
+        var gameID = "123456";
         var playerInfoJson = JsonUtility.ToJson(playerInfo);
 
-        db.RootReference.Child("game session").Push().SetRawJsonValueAsync(playerInfoJson)
+        db.RootReference.Child("game session").Child(gameID).Push().SetRawJsonValueAsync(playerInfoJson)
             .ContinueWith(task =>
             {
                 if (task.IsCanceled || task.IsFaulted)
@@ -189,6 +220,12 @@ public class DatabaseAPI : MonoBehaviour
 
     public void ListenForEnemyAction(Action<PlayerInfo> callback, Action<AggregateException> fallback)
     {
+        if (isListening)
+        {
+            return;
+        }
+        
+        var gameID = "123456";
         Debug.Log("I'm listening!");
         
         void CurrentListener(object o, ChildChangedEventArgs args)
@@ -197,22 +234,20 @@ public class DatabaseAPI : MonoBehaviour
             else callback(JsonUtility.FromJson<PlayerInfo>(args.Snapshot.GetRawJsonValue()));
         }
 
-        db.RootReference.Child("game session").ChildAdded += CurrentListener;
+        db.RootReference.Child("game session").Child(gameID).ChildAdded += CurrentListener;
 
     }
-    
-    private void InstantiateEnemyAction(PlayerInfo playerInfo)
-    {
-        var playerID = $"{playerInfo.playerID}";
-        var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
-        var correctInput = Convert.ToBoolean($"{playerInfo.correctInput}");
 
-        if (playerID == GameManager.Instance.playerID)
-        {
-            return;
-        }
-        
-        GameManager.Instance.CompareTimeStamps(enemyReactionTime);
-        
+
+
+    public void SetPlayerID()
+    {
+        GameManager.Instance.playerID = auth.CurrentUser.UserId;
+    }
+    
+    public void DeleteGameSession()
+    {
+        var gameID = "123456";
+        db.RootReference.Child("game session").Child(gameID).RemoveValueAsync();
     }
 }

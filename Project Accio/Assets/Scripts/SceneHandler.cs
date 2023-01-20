@@ -7,6 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class SceneHandler : MonoBehaviour
 {
+    private void Start()
+    {
+        if (SceneManager.GetSceneByName("Matchmaking").isLoaded)
+        {
+            Invoke(nameof(ConnectToGame), 2f);
+        }
+    }
+
     private void OnEnable()
     {
         DatabaseAPI.LoginSuccessful += LoginSuccessful;
@@ -24,11 +32,12 @@ public class SceneHandler : MonoBehaviour
 
     public void LoginSuccessful()
     {
-        SceneManager.LoadScene("GamePlay");
+        SceneManager.LoadScene("MatchMaking");
     }
+    
 
-    public void GoToSignIn()
+    public void ConnectToGame()
     {
-        SceneManager.LoadScene("SignUp");
+        SceneManager.LoadScene("GamePlay");
     }
 }

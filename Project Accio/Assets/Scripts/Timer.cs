@@ -7,7 +7,7 @@ public class Timer : MonoBehaviour
 {
     public TMP_Text timerText;
     public float timeValue;
-    public float playerTime = 5f;
+    public float playerTime = 0f;
 
     public bool timerOn;
 

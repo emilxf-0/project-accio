@@ -53,19 +53,39 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        //DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        DatabaseAPI.Instance.SetPlayerID();
+        DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        DatabaseAPI.Instance.isListening = true;
     }
 
     
 
     private void Update()
     {
+        //TODO add this to a sequence handler
         if (SceneManager.GetSceneByName("GamePlay").isLoaded == true)
         {
             currentSequenceItem = currentSequence[item];
         }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        }
+    }
+    
+    private void InstantiateEnemyAction(PlayerInfo playerInfo)
+    {
+        var playerID = $"{playerInfo.playerID}";
+        var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
+        //var correctInput = Convert.ToBoolean($"{playerInfo.correctInput}");
+
+        if (this.playerID == playerID)
+        {
+            return;
+        }
         
-        Debug.Log("PlayerID is: " + playerID);
+        CompareTimeStamps(enemyReactionTime);
+        
     }
 
     private void OnEnable()
@@ -117,11 +137,11 @@ public class GameManager : MonoBehaviour
         
         if (player > enemy || inputMatchSequence == false)
         {
-            healthManager.TakeDamage(hitPoints);
+            healthManager.TakeDamage(0.1f);
         }
         else
         {
-            healthManager.Heal(hitPoints);
+            healthManager.Heal(0.05f);
         }
     }
     
@@ -145,7 +165,7 @@ public class GameManager : MonoBehaviour
 
     public float GetHitPoints()
     {
-        return timer.GetCurrentTime() / 8;
+        return timer.GetCurrentTime();
     }
 
     //TODO make this dynamic
