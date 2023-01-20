@@ -54,7 +54,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         DatabaseAPI.Instance.SetPlayerID();
-        //DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        DatabaseAPI.Instance.isListening = true;
     }
 
     
@@ -66,6 +67,24 @@ public class GameManager : MonoBehaviour
         {
             currentSequenceItem = currentSequence[item];
         }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        }
+    }
+    
+    private void InstantiateEnemyAction(PlayerInfo playerInfo)
+    {
+        var playerID = $"{playerInfo.playerID}";
+        var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
+        //var correctInput = Convert.ToBoolean($"{playerInfo.correctInput}");
+
+        if (playerID == GameManager.Instance.playerID)
+        {
+            return;
+        }
+        
+        GameManager.Instance.CompareTimeStamps(enemyReactionTime);
         
     }
 
