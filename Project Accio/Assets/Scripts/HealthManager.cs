@@ -16,7 +16,6 @@ public class HealthManager : MonoBehaviour
     
     void Start()
     {
-        slider.value = maxHealth;
         currentHealth = maxHealth;
         playerHealth = maxHealth;
     }
@@ -30,6 +29,7 @@ public class HealthManager : MonoBehaviour
     public void TakeDamage(float damageTaken)
     {
         Debug.Log("Damage taken: " + damageTaken);
+        Debug.Log("Current health is: " + currentHealth);
         currentHealth -= damageTaken;
 
         if (currentHealth <= 0)
@@ -42,6 +42,10 @@ public class HealthManager : MonoBehaviour
     {
         Debug.Log("Healed: " + hpToHeal);
         currentHealth += hpToHeal;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
     }
 
 }

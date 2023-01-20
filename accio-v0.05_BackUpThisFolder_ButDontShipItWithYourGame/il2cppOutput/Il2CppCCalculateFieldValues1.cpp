@@ -22843,24 +22843,14 @@ struct GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6  : public MonoBehav
 {
 	// System.String GameManager::playerID
 	String_t* ___playerID_5;
-	// System.Collections.Generic.List`1<System.String> GameManager::currentSequence
-	List_1_tF470A3BE5C1B5B68E1325EF3F109D172E60BD7CD* ___currentSequence_6;
-	// System.Collections.Generic.List`1<UnityEngine.UI.Image> GameManager::currentItemImage
-	List_1_tE6BB71ABF15905EFA2BE92C38A2716547AEADB19* ___currentItemImage_7;
-	// System.String GameManager::currentSequenceItem
-	String_t* ___currentSequenceItem_8;
-	// System.Int32 GameManager::item
-	int32_t ___item_9;
-	// System.Boolean GameManager::inputMatchSequence
-	bool ___inputMatchSequence_10;
 	// UnityEngine.GameObject GameManager::gameOver
-	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___gameOver_11;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___gameOver_6;
 	// HealthManager GameManager::healthManager
-	HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E* ___healthManager_12;
+	HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E* ___healthManager_7;
 	// Sequence GameManager::sequence
-	Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2* ___sequence_13;
+	Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2* ___sequence_8;
 	// Timer GameManager::timer
-	Timer_t2FE811324BD2C741B8D6EBC18E20230874E35A20* ___timer_14;
+	Timer_t2FE811324BD2C741B8D6EBC18E20230874E35A20* ___timer_9;
 };
 
 struct GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6_StaticFields
@@ -23122,10 +23112,20 @@ struct SamsungAndroidProviderLoader_t750DAFC3B980CC2B2FB3F5BC080B536ECAF5D293_St
 // Sequence
 struct Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
 {
+	// System.Collections.Generic.List`1<System.String> Sequence::currentSequence
+	List_1_tF470A3BE5C1B5B68E1325EF3F109D172E60BD7CD* ___currentSequence_4;
+	// System.Collections.Generic.List`1<UnityEngine.UI.Image> Sequence::currentItemImage
+	List_1_tE6BB71ABF15905EFA2BE92C38A2716547AEADB19* ___currentItemImage_5;
 	// UnityEngine.GameObject Sequence::sequenceItemPrefab
-	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___sequenceItemPrefab_4;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___sequenceItemPrefab_6;
 	// UnityEngine.Transform Sequence::sequenceTransform
-	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___sequenceTransform_5;
+	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___sequenceTransform_7;
+	// System.String Sequence::currentSequenceItem
+	String_t* ___currentSequenceItem_8;
+	// System.Boolean Sequence::inputMatchSequence
+	bool ___inputMatchSequence_9;
+	// System.Int32 Sequence::item
+	int32_t ___item_10;
 };
 
 // SequenceItem
@@ -28679,9 +28679,9 @@ IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5645[1] =
 IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5646[1] = 
 {
 	static_cast<int32_t>(offsetof(GameInfo_tB32FAD4AE9A8509BA50B278895BA8EEF9D325174, ___gameSessionID_4)),};
-IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5647[11] = 
+IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5647[6] = 
 {
-	static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6_StaticFields, ___instance_4)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___playerID_5)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___currentSequence_6)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___currentItemImage_7)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___currentSequenceItem_8)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___item_9)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___inputMatchSequence_10)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___gameOver_11)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___healthManager_12)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___sequence_13)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___timer_14)),};
+	static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6_StaticFields, ___instance_4)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___playerID_5)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___gameOver_6)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___healthManager_7)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___sequence_8)),static_cast<int32_t>(offsetof(GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6, ___timer_9)),};
 IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5648[5] = 
 {
 	static_cast<int32_t>(offsetof(HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E, ___slider_4)),static_cast<int32_t>(offsetof(HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E, ___maxHealth_5)),static_cast<int32_t>(offsetof(HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E, ___playerHealth_6)),static_cast<int32_t>(offsetof(HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E, ___currentHealth_7)),static_cast<int32_t>(offsetof(HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E_StaticFields, ___PlayerDeath_8)),};
@@ -28709,9 +28709,9 @@ IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5656[5] =
 IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5657[3] = 
 {
 	static_cast<int32_t>(offsetof(PlayerInfo_tC66DD3EB75091432EAF7085658AC2B0065A41223, ___playerID_0)),static_cast<int32_t>(offsetof(PlayerInfo_tC66DD3EB75091432EAF7085658AC2B0065A41223, ___playerReactionTime_1)),static_cast<int32_t>(offsetof(PlayerInfo_tC66DD3EB75091432EAF7085658AC2B0065A41223, ___correctInput_2)),};
-IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5659[2] = 
+IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5659[7] = 
 {
-	static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___sequenceItemPrefab_4)),static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___sequenceTransform_5)),};
+	static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___currentSequence_4)),static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___currentItemImage_5)),static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___sequenceItemPrefab_6)),static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___sequenceTransform_7)),static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___currentSequenceItem_8)),static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___inputMatchSequence_9)),static_cast<int32_t>(offsetof(Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2, ___item_10)),};
 IL2CPP_EXTERN_C const int32_t g_FieldOffsetTable5660[1] = 
 {
 	static_cast<int32_t>(offsetof(SequenceItem_tAD47C7C655011AF6B5CD9D81A1191D81E0A7E873, ___possibleActions_4)),};

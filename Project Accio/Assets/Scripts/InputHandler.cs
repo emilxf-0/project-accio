@@ -54,9 +54,10 @@ public class InputHandler : MonoBehaviour
 
     public void SendAction()
     {
-        var playerReaction = GameManager.Instance.GetHitPoints();
+        var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
         var playerID = GameManager.Instance.playerID;
-        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction), () =>
+        var sequenceID = GameManager.Instance.sequence.sequencePosition;
+        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequenceID), () =>
         {
             // Action was sent!
         }, exception => { Debug.Log(exception); });

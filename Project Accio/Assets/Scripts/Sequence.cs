@@ -13,12 +13,15 @@ public class Sequence : MonoBehaviour
     public GameObject sequenceItemPrefab;
     public Transform sequenceTransform;
     
-    private string currentSequenceItem;
+    public string currentSequenceItem;
     public bool inputMatchSequence;
+    public int sequencePosition;
+    
     private int item = 0;
 
     private void Start()
     {
+        sequencePosition = -1;
         CreateSequence(4);
     }
 
@@ -39,6 +42,7 @@ public class Sequence : MonoBehaviour
             
             newArrow.transform.SetParent(sequenceTransform, false);
             newArrow.GetComponent<Image>().sprite = newArrow.GetComponent<SequenceItem>().possibleActions[randomDirection];
+            //newArrow.GetComponent<SequenceItem>().sequenceID = i; //Sets the sequenceitemID to current position
             
             currentItemImage.Add(newArrow.GetComponent<Image>());
 
@@ -63,6 +67,7 @@ public class Sequence : MonoBehaviour
     
     public void CompareInputWithSequence(string buttonID)
     {
+        sequencePosition = item;
         
         if (buttonID == currentSequenceItem)
         {

@@ -8,12 +8,13 @@ public class PlayerInfo
 {
     public string playerID;
     public float playerReactionTime;
-    public bool correctInput;
-    
-    public PlayerInfo(string playerID, float playerReactionTime)
+    public int sequenceID;
+
+    public PlayerInfo(string playerID, float playerReactionTime, int sequenceID)
     {
         this.playerID = playerID;
         this.playerReactionTime = playerReactionTime;
+        this.sequenceID = sequenceID;
     }
 
 }

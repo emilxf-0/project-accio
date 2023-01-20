@@ -71,27 +71,37 @@ public class GameManager : MonoBehaviour
     
     private void InstantiateEnemyAction(PlayerInfo playerInfo)
     {
-        var playerID = $"{playerInfo.playerID}";
+        var enemyPlayerID = $"{playerInfo.playerID}";
         var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
-        //var correctInput = Convert.ToBoolean($"{playerInfo.correctInput}");
+        var enemySequencePosition = Int32.Parse($"{playerInfo.sequenceID}");
 
-        if (this.playerID == playerID)
+        if (enemyPlayerID == playerID || enemyPlayerID == "0")
         {
             return;
         }
         
-        CompareTimeStamps(enemyReactionTime);
-        
+        //Checks to see if the Player is behind the enemy player 
+        if (enemySequencePosition > sequence.sequencePosition)
+        {
+            StartCoroutine(AssignDamage(enemyReactionTime, enemySequencePosition));
+        }
+        else
+        {
+            CompareTimeStamps(enemyReactionTime, GetPlayerTimeStamp());
+        }
     }
     
-    public void CompareTimeStamps(float enemyTimeStamp)
+    IEnumerator AssignDamage(float enemyReactionTime, int enemySequencePosition)
     {
-        var player = GetHitPoints();
-        var enemy = enemyTimeStamp;
-
-        var hitPoints = Mathf.Abs(player - enemy);
+        yield return new WaitUntil(() => sequence.sequencePosition == enemySequencePosition);
+        CompareTimeStamps(enemyReactionTime, GetPlayerTimeStamp());
+    }
+    
+    public void CompareTimeStamps(float enemyTimeStamp, float playerTimeStamp)
+    {
+        var hitPoints = Mathf.Abs(playerTimeStamp - enemyTimeStamp);
         
-        if (player > enemy || sequence.inputMatchSequence == false)
+        if (playerTimeStamp > enemyTimeStamp || sequence.inputMatchSequence == false)
         {
             healthManager.TakeDamage(0.1f);
         }
@@ -100,7 +110,6 @@ public class GameManager : MonoBehaviour
             healthManager.Heal(0.05f);
         }
     }
-    
 
     public void PlayerDeath()
     {
@@ -119,7 +128,7 @@ public class GameManager : MonoBehaviour
         timer.Reset();
     }
 
-    public float GetHitPoints()
+    public float GetPlayerTimeStamp()
     {
         return timer.GetCurrentTime();
     }
@@ -131,6 +140,4 @@ public class GameManager : MonoBehaviour
         return hitPoints;
     }
 
-    
-    
 }
