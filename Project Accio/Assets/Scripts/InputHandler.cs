@@ -15,7 +15,7 @@ public class InputHandler : MonoBehaviour
     
     public void GetButtonInput(string id)
     {
-        GameManager.Instance.CompareInputWithSequence(id);
+        GameManager.Instance.sequence.CompareInputWithSequence(id);
     }
 
     public void CompareTimeStamps()
@@ -54,9 +54,11 @@ public class InputHandler : MonoBehaviour
 
     public void SendAction()
     {
-        var playerReaction = GameManager.Instance.GetHitPoints();
+        var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
         var playerID = GameManager.Instance.playerID;
-        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction), () =>
+        var sequencePosition = GameManager.Instance.sequence.sequencePosition;
+
+        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition), () =>
         {
             // Action was sent!
         }, exception => { Debug.Log(exception); });
@@ -90,6 +92,11 @@ public class InputHandler : MonoBehaviour
                 signupPanel.SetActive(false);
                 break;
         }
+    }
+
+    public void StartGame()
+    {
+        GameManager.Instance.gameHasStarted = true;
     }
 
     public void SignOutFromGame()

@@ -25,14 +25,12 @@ public class GameManager : MonoBehaviour
     }
 
     public string playerID = "187";
+    public bool gameHasStarted = false;
 
-    public List<string> currentSequence = new();
-    public List<Image> currentItemImage = new();
+    private float lastEnemyTimestamp;
+    private int lastEnemyPosition;
+    private float latestPlayerTimestamp;
     
-    private string currentSequenceItem;
-    private int item = 0;
-    private bool inputMatchSequence;
-
     public GameObject gameOver;
     public HealthManager healthManager;
     public Sequence sequence;
@@ -50,44 +48,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
     }
-
-    private void Start()
-    {
-        DatabaseAPI.Instance.SetPlayerID();
-        DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
-        DatabaseAPI.Instance.isListening = true;
-    }
-
     
-
-    private void Update()
-    {
-        //TODO add this to a sequence handler
-        if (SceneManager.GetSceneByName("GamePlay").isLoaded == true)
-        {
-            currentSequenceItem = currentSequence[item];
-        }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
-        }
-    }
-    
-    private void InstantiateEnemyAction(PlayerInfo playerInfo)
-    {
-        var playerID = $"{playerInfo.playerID}";
-        var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
-        //var correctInput = Convert.ToBoolean($"{playerInfo.correctInput}");
-
-        if (this.playerID == playerID)
-        {
-            return;
-        }
-        
-        CompareTimeStamps(enemyReactionTime);
-        
-    }
-
     private void OnEnable()
     {
         HealthManager.PlayerDeath += PlayerDeath;
@@ -98,53 +59,85 @@ public class GameManager : MonoBehaviour
         HealthManager.PlayerDeath -= PlayerDeath;
     }
 
-    public void CompareInputWithSequence(string buttonID)
+    private void Start()
     {
+        DatabaseAPI.Instance.SetPlayerID();
         
-        if (buttonID == currentSequenceItem)
+        if (SceneManager.GetSceneByName("GamePlay").isLoaded)
         {
-            inputMatchSequence = true;
-            currentItemImage[item].color = Color.green;
-        }
-        else
-        {
-            inputMatchSequence = false;
-            currentItemImage[item].color = Color.red;
+            DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
         }
         
-        Invoke(nameof(UpdateSequence), 0.2f);
+        DatabaseAPI.Instance.isListening = true;
     }
 
-    public void UpdateSequence()
+    private void Update()
     {
-        if (item != currentSequence.Count - 1)
+        if (Input.GetKeyDown(KeyCode.B))
         {
-            item++;
-        }
-        else
-        {
-            item = 0;
-            NewSequence();
-        }
-    }
-
-    public void CompareTimeStamps(float enemyTimeStamp)
-    {
-        var player = GetHitPoints();
-        var enemy = enemyTimeStamp;
-
-        var hitPoints = Mathf.Abs(player - enemy);
-        
-        if (player > enemy || inputMatchSequence == false)
-        {
-            healthManager.TakeDamage(0.1f);
-        }
-        else
-        {
-            healthManager.Heal(0.05f);
+            DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
         }
     }
     
+    private void InstantiateEnemyAction(PlayerInfo playerInfo)
+    {
+            var enemyPlayerID = $"{playerInfo.playerID}";
+            var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
+            var enemySequencePosition = int.Parse($"{playerInfo.sequencePosition}");
+
+        if (enemyPlayerID == playerID || enemyPlayerID == "0")
+        {
+            CheckIfPlayerShouldHaveMomentum();
+            return;
+        }
+
+        gameHasStarted = true;
+
+        CompareTimeStampsAndPosition(enemyReactionTime, GetPlayerTimeStamp(), enemySequencePosition);
+        lastEnemyTimestamp = enemyReactionTime;
+
+        lastEnemyPosition = enemySequencePosition;
+    }
+
+    public void CompareTimeStampsAndPosition(float enemyTimeStamp, float playerTimeStamp, int enemyPosition)
+    {
+
+        var timestampDifference = Mathf.Abs(playerTimeStamp - enemyTimeStamp);
+        var playerSequencePosition = sequence.sequencePosition;
+        
+        Debug.Log("Player stats are: " + playerTimeStamp + " and " + playerSequencePosition);
+        Debug.Log("Enemy stats are: " + enemyTimeStamp + " and " + enemyPosition);
+        Debug.Log("Enemy momentum is: " + healthManager.enemyMomentum);
+        
+        if (sequence.inputMatchSequence == false)
+        {
+            //TODO increase damage multiplier
+        }
+
+        if (playerSequencePosition < enemyPosition)
+        {
+            healthManager.enemyMomentum = true;
+        }
+        else if (latestPlayerTimestamp > enemyTimeStamp)
+        {
+            healthManager.enemyMomentum = true;
+        }
+        else
+        {
+            Debug.Log("Now I'm healing!");
+            healthManager.enemyMomentum = false;
+        }
+        
+        Debug.Log("And now Enemy momentum is: " + healthManager.enemyMomentum);
+    }
+
+    public void CheckIfPlayerShouldHaveMomentum()
+    {
+        if (lastEnemyPosition < sequence.sequencePosition)
+        {
+            healthManager.enemyMomentum = false;
+        }
+    }
 
     public void PlayerDeath()
     {
@@ -155,7 +148,7 @@ public class GameManager : MonoBehaviour
     {
         healthManager.currentHealth = healthManager.maxHealth;
         gameOver.SetActive(false);
-        NewSequence();
+        sequence.NewSequence();
     }
 
     public void ResetTimer()
@@ -163,24 +156,16 @@ public class GameManager : MonoBehaviour
         timer.Reset();
     }
 
-    public float GetHitPoints()
+    public float GetPlayerTimeStamp()
     {
         return timer.GetCurrentTime();
     }
 
-    //TODO make this dynamic
+    //This is for SinglePlayer mode
     public float EnemyHitPoints()
     {
         var hitPoints = 0.1f;
         return hitPoints;
     }
 
-    public void NewSequence()
-    {
-        currentSequence.Clear();
-        currentItemImage.Clear();
-        sequence.DestroySequence();
-        sequence.CreateSequence(4);
-    }
-    
 }

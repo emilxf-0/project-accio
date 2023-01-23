@@ -33,21 +33,17 @@ public class Timer : MonoBehaviour
 
     private void DisplayTime(float timeToDisplay)
     {
-        float seconds = timeValue % 60;
-        
-        timerText.text = string.Format("{0:00}", seconds);
+        timerText.text = string.Format("{0:00}", timeValue);
     }
 
     public float GetCurrentTime()
     {
-        float seconds = timeValue % 60;
-
-        return seconds;
+        return timeValue;
     }
 
     public void Reset()
     {
         timeValue = 0;
     }
-    
+
 }

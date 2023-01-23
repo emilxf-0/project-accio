@@ -148,7 +148,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: -8118432545377107524, guid: c46b05943b7aad54cb83b7e69fb7cffb, type: 3}
         m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
-        m_MethodName: ResetTimer
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

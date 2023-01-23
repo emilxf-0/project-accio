@@ -5040,24 +5040,14 @@ struct GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6  : public MonoBehav
 {
 	// System.String GameManager::playerID
 	String_t* ___playerID_5;
-	// System.Collections.Generic.List`1<System.String> GameManager::currentSequence
-	List_1_tF470A3BE5C1B5B68E1325EF3F109D172E60BD7CD* ___currentSequence_6;
-	// System.Collections.Generic.List`1<UnityEngine.UI.Image> GameManager::currentItemImage
-	List_1_tE6BB71ABF15905EFA2BE92C38A2716547AEADB19* ___currentItemImage_7;
-	// System.String GameManager::currentSequenceItem
-	String_t* ___currentSequenceItem_8;
-	// System.Int32 GameManager::item
-	int32_t ___item_9;
-	// System.Boolean GameManager::inputMatchSequence
-	bool ___inputMatchSequence_10;
 	// UnityEngine.GameObject GameManager::gameOver
-	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___gameOver_11;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___gameOver_6;
 	// HealthManager GameManager::healthManager
-	HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E* ___healthManager_12;
+	HealthManager_tAB319BBC8107B1FA06DBCCECA09BC6961E87241E* ___healthManager_7;
 	// Sequence GameManager::sequence
-	Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2* ___sequence_13;
+	Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2* ___sequence_8;
 	// Timer GameManager::timer
-	Timer_t2FE811324BD2C741B8D6EBC18E20230874E35A20* ___timer_14;
+	Timer_t2FE811324BD2C741B8D6EBC18E20230874E35A20* ___timer_9;
 };
 
 struct GameManager_tFE129A0017AF5BBD30FDCD4403B9CCEAE064C6B6_StaticFields
@@ -5134,10 +5124,20 @@ struct SceneHandler_tD870869C46AFB7F01D46F970EAED879A2342245E  : public MonoBeha
 // Sequence
 struct Sequence_tDBB5554C0515568317CC3075FF030825286CDAC2  : public MonoBehaviour_t532A11E69716D348D8AA7F854AFCBFCB8AD17F71
 {
+	// System.Collections.Generic.List`1<System.String> Sequence::currentSequence
+	List_1_tF470A3BE5C1B5B68E1325EF3F109D172E60BD7CD* ___currentSequence_4;
+	// System.Collections.Generic.List`1<UnityEngine.UI.Image> Sequence::currentItemImage
+	List_1_tE6BB71ABF15905EFA2BE92C38A2716547AEADB19* ___currentItemImage_5;
 	// UnityEngine.GameObject Sequence::sequenceItemPrefab
-	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___sequenceItemPrefab_4;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___sequenceItemPrefab_6;
 	// UnityEngine.Transform Sequence::sequenceTransform
-	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___sequenceTransform_5;
+	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___sequenceTransform_7;
+	// System.String Sequence::currentSequenceItem
+	String_t* ___currentSequenceItem_8;
+	// System.Boolean Sequence::inputMatchSequence
+	bool ___inputMatchSequence_9;
+	// System.Int32 Sequence::item
+	int32_t ___item_10;
 };
 
 // SequenceItem
