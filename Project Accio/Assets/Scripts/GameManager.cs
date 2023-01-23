@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     private float lastEnemyTimestamp;
     private int lastEnemyPosition;
-    private int latestPlayerTimestamp;
+    private float latestPlayerTimestamp;
     
     public GameObject gameOver;
     public HealthManager healthManager;
@@ -87,10 +87,7 @@ public class GameManager : MonoBehaviour
 
         if (enemyPlayerID == playerID || enemyPlayerID == "0")
         {
-            var playerReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
-            
             CheckIfPlayerShouldHaveMomentum();
-            
             return;
         }
 
