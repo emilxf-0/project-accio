@@ -237,8 +237,8 @@ public class DatabaseAPI : MonoBehaviour
         db.RootReference.Child("game session").Child(gameID).ChildAdded += CurrentListener;
 
     }
-
-
+    
+   
 
     public void SetPlayerID()
     {

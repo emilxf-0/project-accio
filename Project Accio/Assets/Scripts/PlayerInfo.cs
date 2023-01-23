@@ -8,13 +8,13 @@ public class PlayerInfo
 {
     public string playerID;
     public float playerReactionTime;
-    public int sequenceID;
+    public int sequencePosition;
 
-    public PlayerInfo(string playerID, float playerReactionTime, int sequenceID)
+    public PlayerInfo(string playerID, float playerReactionTime, int sequencePosition)
     {
         this.playerID = playerID;
         this.playerReactionTime = playerReactionTime;
-        this.sequenceID = sequenceID;
+        this.sequencePosition = sequencePosition;
     }
 
 }

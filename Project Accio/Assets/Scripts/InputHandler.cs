@@ -56,8 +56,9 @@ public class InputHandler : MonoBehaviour
     {
         var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
         var playerID = GameManager.Instance.playerID;
-        var sequenceID = GameManager.Instance.sequence.sequencePosition;
-        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequenceID), () =>
+        var sequencePosition = GameManager.Instance.sequence.sequencePosition;
+
+        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition), () =>
         {
             // Action was sent!
         }, exception => { Debug.Log(exception); });
@@ -91,6 +92,11 @@ public class InputHandler : MonoBehaviour
                 signupPanel.SetActive(false);
                 break;
         }
+    }
+
+    public void StartGame()
+    {
+        GameManager.Instance.gameHasStarted = true;
     }
 
     public void SignOutFromGame()

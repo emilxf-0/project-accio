@@ -25,6 +25,11 @@ public class GameManager : MonoBehaviour
     }
 
     public string playerID = "187";
+    public bool gameHasStarted = false;
+
+    private float lastEnemyTimestamp;
+    private int lastEnemyPosition;
+    private int latestPlayerTimestamp;
     
     public GameObject gameOver;
     public HealthManager healthManager;
@@ -57,7 +62,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         DatabaseAPI.Instance.SetPlayerID();
-        DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        
+        if (SceneManager.GetSceneByName("GamePlay").isLoaded)
+        {
+            DatabaseAPI.Instance.ListenForEnemyAction(InstantiateEnemyAction, Debug.Log);
+        }
+        
         DatabaseAPI.Instance.isListening = true;
     }
 
@@ -71,43 +81,64 @@ public class GameManager : MonoBehaviour
     
     private void InstantiateEnemyAction(PlayerInfo playerInfo)
     {
-        var enemyPlayerID = $"{playerInfo.playerID}";
-        var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
-        var enemySequencePosition = Int32.Parse($"{playerInfo.sequenceID}");
+            var enemyPlayerID = $"{playerInfo.playerID}";
+            var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
+            var enemySequencePosition = int.Parse($"{playerInfo.sequencePosition}");
 
         if (enemyPlayerID == playerID || enemyPlayerID == "0")
         {
+            var playerReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
+            
+            CheckIfPlayerShouldHaveMomentum();
+            
             return;
         }
+
+        gameHasStarted = true;
+
+        CompareTimeStampsAndPosition(enemyReactionTime, GetPlayerTimeStamp(), enemySequencePosition);
+        lastEnemyTimestamp = enemyReactionTime;
+
+        lastEnemyPosition = enemySequencePosition;
+    }
+
+    public void CompareTimeStampsAndPosition(float enemyTimeStamp, float playerTimeStamp, int enemyPosition)
+    {
+
+        var timestampDifference = Mathf.Abs(playerTimeStamp - enemyTimeStamp);
+        var playerSequencePosition = sequence.sequencePosition;
         
-        //Checks to see if the Player is behind the enemy player 
-        if (enemySequencePosition > sequence.sequencePosition)
+        Debug.Log("Player stats are: " + playerTimeStamp + " and " + playerSequencePosition);
+        Debug.Log("Enemy stats are: " + enemyTimeStamp + " and " + enemyPosition);
+        Debug.Log("Enemy momentum is: " + healthManager.enemyMomentum);
+        
+        if (sequence.inputMatchSequence == false)
         {
-            StartCoroutine(AssignDamage(enemyReactionTime, enemySequencePosition));
+            //TODO increase damage multiplier
+        }
+
+        if (playerSequencePosition < enemyPosition)
+        {
+            healthManager.enemyMomentum = true;
+        }
+        else if (latestPlayerTimestamp > enemyTimeStamp)
+        {
+            healthManager.enemyMomentum = true;
         }
         else
         {
-            CompareTimeStamps(enemyReactionTime, GetPlayerTimeStamp());
+            Debug.Log("Now I'm healing!");
+            healthManager.enemyMomentum = false;
         }
-    }
-    
-    IEnumerator AssignDamage(float enemyReactionTime, int enemySequencePosition)
-    {
-        yield return new WaitUntil(() => sequence.sequencePosition == enemySequencePosition);
-        CompareTimeStamps(enemyReactionTime, GetPlayerTimeStamp());
-    }
-    
-    public void CompareTimeStamps(float enemyTimeStamp, float playerTimeStamp)
-    {
-        var hitPoints = Mathf.Abs(playerTimeStamp - enemyTimeStamp);
         
-        if (playerTimeStamp > enemyTimeStamp || sequence.inputMatchSequence == false)
+        Debug.Log("And now Enemy momentum is: " + healthManager.enemyMomentum);
+    }
+
+    public void CheckIfPlayerShouldHaveMomentum()
+    {
+        if (lastEnemyPosition < sequence.sequencePosition)
         {
-            healthManager.TakeDamage(0.1f);
-        }
-        else
-        {
-            healthManager.Heal(0.05f);
+            healthManager.enemyMomentum = false;
         }
     }
 

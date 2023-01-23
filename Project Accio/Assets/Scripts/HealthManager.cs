@@ -11,26 +11,38 @@ public class HealthManager : MonoBehaviour
     public float maxHealth;
     public float playerHealth;
     public float currentHealth;
-
+    public bool enemyMomentum;
     public static event Action PlayerDeath; 
     
     void Start()
     {
-        currentHealth = maxHealth;
-        playerHealth = maxHealth;
+        playerHealth = maxHealth / 2;
+        currentHealth = playerHealth;
     }
 
    
     void Update()
     {
         slider.value = currentHealth;
+
+        while (GameManager.Instance.gameHasStarted == false)
+        {
+            return;
+        }
+        
+        if (enemyMomentum)
+        {
+            TakeDamage(0.01f);
+        }
+        else
+        {
+            Heal(0.01f);
+        }
     }
 
     public void TakeDamage(float damageTaken)
     {
-        Debug.Log("Damage taken: " + damageTaken);
-        Debug.Log("Current health is: " + currentHealth);
-        currentHealth -= damageTaken;
+        currentHealth -= damageTaken * Time.deltaTime;
 
         if (currentHealth <= 0)
         {
@@ -40,12 +52,23 @@ public class HealthManager : MonoBehaviour
 
     public void Heal(float hpToHeal)
     {
-        Debug.Log("Healed: " + hpToHeal);
-        currentHealth += hpToHeal;
+        currentHealth += hpToHeal * Time.deltaTime;
+        
         if (currentHealth > maxHealth)
         {
-            currentHealth = maxHealth;
+            currentHealth = playerHealth;
         }
+    }
+
+    public bool CheckIfPlayerHasTakenDamage()
+    {
+        if (playerHealth < maxHealth)
+        {
+            return true;
+        }
+        
+        return false;
+        
     }
 
 }

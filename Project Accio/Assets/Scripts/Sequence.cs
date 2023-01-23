@@ -15,13 +15,12 @@ public class Sequence : MonoBehaviour
     
     public string currentSequenceItem;
     public bool inputMatchSequence;
-    public int sequencePosition;
+    public int sequencePosition = 0;
     
     private int item = 0;
 
     private void Start()
     {
-        sequencePosition = -1;
         CreateSequence(4);
     }
 
@@ -67,7 +66,7 @@ public class Sequence : MonoBehaviour
     
     public void CompareInputWithSequence(string buttonID)
     {
-        sequencePosition = item;
+        sequencePosition++;
         
         if (buttonID == currentSequenceItem)
         {
