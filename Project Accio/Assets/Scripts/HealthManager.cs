@@ -12,12 +12,18 @@ public class HealthManager : MonoBehaviour
     public float playerHealth;
     public float currentHealth;
     public bool enemyMomentum;
+
+    public GameObject midPoint;
+    public GameObject enemyPosition;
+    public GameObject playerPosition;
+    
     public static event Action PlayerDeath; 
     
     void Start()
     {
         playerHealth = maxHealth / 2;
         currentHealth = playerHealth;
+        StartPosition();
     }
 
    
@@ -32,19 +38,19 @@ public class HealthManager : MonoBehaviour
         
         if (enemyMomentum)
         {
-            TakeDamage(0.05f);
+            TakeDamage(0.75f);
         }
         else
         {
-            Heal(0.05f);
+            Heal(0.75f);
         }
     }
 
     public void TakeDamage(float damageTaken)
     {
-        currentHealth -= damageTaken * Time.deltaTime;
-
-        if (currentHealth <= 0)
+        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, playerPosition.transform.position, damageTaken * Time.deltaTime);
+        
+        if (midPoint.transform.position == playerPosition.transform.position)
         {
             PlayerDeath.Invoke();
         }
@@ -52,11 +58,11 @@ public class HealthManager : MonoBehaviour
 
     public void Heal(float hpToHeal)
     {
-        currentHealth += hpToHeal * Time.deltaTime;
+        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, enemyPosition.transform.position, hpToHeal * Time.deltaTime);
         
-        if (currentHealth > maxHealth)
+        if (midPoint.transform.position == enemyPosition.transform.position)
         {
-            currentHealth = playerHealth;
+            PlayerDeath.Invoke();
         }
     }
 
@@ -68,7 +74,11 @@ public class HealthManager : MonoBehaviour
         }
         
         return false;
-        
+    }
+
+    public void StartPosition()
+    {
+        midPoint.transform.position = Vector3.Lerp(enemyPosition.transform.position, playerPosition.transform.position, 0.5f);
     }
 
 }
