@@ -26,10 +26,11 @@ public class GameManager : MonoBehaviour
 
     public string playerID = "187";
     public bool gameHasStarted = false;
+    
 
     private float lastEnemyTimestamp;
     private int lastEnemyPosition;
-    private float latestPlayerTimestamp;
+    public float latestPlayerTimestamp;
     
     public GameObject gameOver;
     public HealthManager healthManager;
@@ -79,11 +80,17 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    public void SinglePlayerGame()
+    {
+        CompareTimestampWithComputer(ComputerEnemyTimeStamp(), GetPlayerTimeStamp());
+        Invoke(nameof(SinglePlayerGame), 0.5f);
+    }
+    
     private void InstantiateEnemyAction(PlayerInfo playerInfo)
     {
-            var enemyPlayerID = $"{playerInfo.playerID}";
-            var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
-            var enemySequencePosition = int.Parse($"{playerInfo.sequencePosition}");
+        var enemyPlayerID = $"{playerInfo.playerID}";
+        var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
+        var enemySequencePosition = int.Parse($"{playerInfo.sequencePosition}");
 
         if (enemyPlayerID == playerID || enemyPlayerID == "0")
         {
@@ -99,10 +106,14 @@ public class GameManager : MonoBehaviour
         lastEnemyPosition = enemySequencePosition;
     }
 
+    public void CompareTimestampWithComputer(float enemyTimeStamp, float playerTimeStamp)
+    {
+        healthManager.enemyMomentum = enemyTimeStamp < playerTimeStamp;
+    }
+
     public void CompareTimeStampsAndPosition(float enemyTimeStamp, float playerTimeStamp, int enemyPosition)
     {
 
-        var timestampDifference = Mathf.Abs(playerTimeStamp - enemyTimeStamp);
         var playerSequencePosition = sequence.sequencePosition;
         
         Debug.Log("Player stats are: " + playerTimeStamp + " and " + playerSequencePosition);
@@ -162,10 +173,10 @@ public class GameManager : MonoBehaviour
     }
 
     //This is for SinglePlayer mode
-    public float EnemyHitPoints()
+    public float ComputerEnemyTimeStamp()
     {
-        var hitPoints = 0.1f;
-        return hitPoints;
+        var computerTimeStamp = latestPlayerTimestamp + (Random.Range(0.02f, 0.4f));
+        return computerTimeStamp;
     }
 
 }

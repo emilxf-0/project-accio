@@ -22,6 +22,12 @@ public class InputHandler : MonoBehaviour
     {
         //GameManager.Instance.CompareTimeStamps();
     }
+    
+    public void StartSinglePlayerGame()
+    {
+        DatabaseAPI.Instance.singlePlayerGame = true;
+        //PlayWithoutLoggingIn();
+    }
 
     public void PlayWithoutLoggingIn()
     {
@@ -58,10 +64,18 @@ public class InputHandler : MonoBehaviour
         var playerID = GameManager.Instance.playerID;
         var sequencePosition = GameManager.Instance.sequence.sequencePosition;
 
-        DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition), () =>
+        if (DatabaseAPI.Instance.singlePlayerGame)
         {
-            // Action was sent!
-        }, exception => { Debug.Log(exception); });
+            GameManager.Instance.latestPlayerTimestamp = playerReaction;
+            GameManager.Instance.SinglePlayerGame();
+        }
+        else
+        {
+            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition), () =>
+            {
+                // Action was sent!
+            }, exception => { Debug.Log(exception); });
+        }
     }
 
     public void ShowPanel(string panelName)
@@ -98,6 +112,8 @@ public class InputHandler : MonoBehaviour
     {
         GameManager.Instance.gameHasStarted = true;
     }
+
+
 
     public void SignOutFromGame()
     {

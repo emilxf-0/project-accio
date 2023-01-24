@@ -34,7 +34,6 @@ public class SceneHandler : MonoBehaviour
     {
         SceneManager.LoadScene("MatchMaking");
     }
-    
 
     public void ConnectToGame()
     {
