@@ -31,6 +31,7 @@ public class DatabaseAPI : MonoBehaviour
     
     public static event Action LoginSuccessful;
     public PlayerHandler playerHandler;
+    public bool singlePlayerGame;
     
     FirebaseAuth auth;
     private FirebaseDatabase db;
@@ -48,9 +49,7 @@ public class DatabaseAPI : MonoBehaviour
             
             auth = FirebaseAuth.DefaultInstance;
             db = FirebaseDatabase.DefaultInstance;
-            
-            
-            
+
     }
     
     

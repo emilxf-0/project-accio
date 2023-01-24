@@ -32,11 +32,11 @@ public class HealthManager : MonoBehaviour
         
         if (enemyMomentum)
         {
-            TakeDamage(0.01f);
+            TakeDamage(0.05f);
         }
         else
         {
-            Heal(0.01f);
+            Heal(0.05f);
         }
     }
 
