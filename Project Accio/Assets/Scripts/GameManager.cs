@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     public float latestPlayerTimestamp;
     
     public GameObject gameOver;
+    public TMP_Text gameOverText;
     public HealthManager healthManager;
     public Sequence sequence;
     public Timer timer;
@@ -152,12 +154,20 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDeath()
     {
+        if (healthManager.midPoint.transform.position == healthManager.playerPosition.transform.position)
+        {
+            gameOverText.text = "Avada Kedavra, bitch!";
+        }
+        else
+        {
+            gameOverText.text = "Congratulations, you killed someone!";
+        }
         gameOver.SetActive(true);
     }
 
     public void ResetGame()
     {
-        healthManager.currentHealth = healthManager.maxHealth;
+        healthManager.StartPosition();
         gameOver.SetActive(false);
         sequence.NewSequence();
     }

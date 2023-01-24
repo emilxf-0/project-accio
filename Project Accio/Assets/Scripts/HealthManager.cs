@@ -23,6 +23,7 @@ public class HealthManager : MonoBehaviour
     {
         playerHealth = maxHealth / 2;
         currentHealth = playerHealth;
+        StartPosition();
     }
 
    
@@ -37,20 +38,17 @@ public class HealthManager : MonoBehaviour
         
         if (enemyMomentum)
         {
-            TakeDamage(1f);
+            TakeDamage(0.75f);
         }
         else
         {
-            Heal(1f);
+            Heal(0.75f);
         }
     }
 
     public void TakeDamage(float damageTaken)
     {
-        currentHealth -= damageTaken * Time.deltaTime;
-        
         midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, playerPosition.transform.position, damageTaken * Time.deltaTime);
-
         
         if (midPoint.transform.position == playerPosition.transform.position)
         {
@@ -61,6 +59,11 @@ public class HealthManager : MonoBehaviour
     public void Heal(float hpToHeal)
     {
         midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, enemyPosition.transform.position, hpToHeal * Time.deltaTime);
+        
+        if (midPoint.transform.position == enemyPosition.transform.position)
+        {
+            PlayerDeath.Invoke();
+        }
     }
 
     public bool CheckIfPlayerHasTakenDamage()
@@ -71,7 +74,11 @@ public class HealthManager : MonoBehaviour
         }
         
         return false;
-        
+    }
+
+    public void StartPosition()
+    {
+        midPoint.transform.position = Vector3.Lerp(enemyPosition.transform.position, playerPosition.transform.position, 0.5f);
     }
 
 }
