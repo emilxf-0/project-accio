@@ -12,6 +12,11 @@ public class HealthManager : MonoBehaviour
     public float playerHealth;
     public float currentHealth;
     public bool enemyMomentum;
+
+    public GameObject midPoint;
+    public GameObject enemyPosition;
+    public GameObject playerPosition;
+    
     public static event Action PlayerDeath; 
     
     void Start()
@@ -32,19 +37,22 @@ public class HealthManager : MonoBehaviour
         
         if (enemyMomentum)
         {
-            TakeDamage(0.05f);
+            TakeDamage(1f);
         }
         else
         {
-            Heal(0.05f);
+            Heal(1f);
         }
     }
 
     public void TakeDamage(float damageTaken)
     {
         currentHealth -= damageTaken * Time.deltaTime;
+        
+        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, playerPosition.transform.position, damageTaken * Time.deltaTime);
 
-        if (currentHealth <= 0)
+        
+        if (midPoint.transform.position == playerPosition.transform.position)
         {
             PlayerDeath.Invoke();
         }
@@ -52,12 +60,7 @@ public class HealthManager : MonoBehaviour
 
     public void Heal(float hpToHeal)
     {
-        currentHealth += hpToHeal * Time.deltaTime;
-        
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = playerHealth;
-        }
+        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, enemyPosition.transform.position, hpToHeal * Time.deltaTime);
     }
 
     public bool CheckIfPlayerHasTakenDamage()
