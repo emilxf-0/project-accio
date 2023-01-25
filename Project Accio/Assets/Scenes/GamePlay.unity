@@ -3602,6 +3602,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 798466478}
     - target: {fileID: 4739642756359210438, guid: fea480fdcbce29a45bfb57033adf7532, type: 3}
+      propertyPath: gameOverText
+      value: 
+      objectReference: {fileID: 414609544}
+    - target: {fileID: 4739642756359210438, guid: fea480fdcbce29a45bfb57033adf7532, type: 3}
       propertyPath: healthManager
       value: 
       objectReference: {fileID: 1048840191}
