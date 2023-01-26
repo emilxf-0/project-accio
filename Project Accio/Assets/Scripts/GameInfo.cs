@@ -1,8 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameInfo : MonoBehaviour
+[Serializable]
+public class GameInfo
 {
-    public int gameSessionID;
+    public string gameSessionID;
+    public bool waitingForPlayers;
+
+    public GameInfo(string gameSessionID, bool waitingForPlayers)
+    {
+        this.gameSessionID = gameSessionID;
+        this.waitingForPlayers = waitingForPlayers;
+    }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 using Firebase.Database;
 using Firebase.Extensions;
 using Firebase.Auth;
+using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -24,7 +27,7 @@ public class DatabaseAPI : MonoBehaviour
             return instance;
         }
     }
-    
+
     public delegate void OnLoadedDelegate(string jsonData);
 
     public bool isListening;
@@ -35,25 +38,22 @@ public class DatabaseAPI : MonoBehaviour
     
     FirebaseAuth auth;
     private FirebaseDatabase db;
-    
+
     private void Awake()
     {
         instance = this;
         
-        // FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        // {
-        //     if (task.Exception != null)
-        //         Debug.LogError(task.Exception);
-        //     
-        // });
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+                Debug.LogError(task.Exception);
+            
+        });
             
             auth = FirebaseAuth.DefaultInstance;
             db = FirebaseDatabase.DefaultInstance;
-
+            db.SetPersistenceEnabled(false);
     }
-    
-    
-   
 
     private void Update()
     {
@@ -65,28 +65,6 @@ public class DatabaseAPI : MonoBehaviour
             DataTest(auth.CurrentUser.UserId, Random.Range(0, 100).ToString());
         }
         
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            LoadDataMultiple("game session/");
-        }
-
-        
-    }
-
-    public void LoadDataMultiple(string path)
-    {
-        db.RootReference.Child(path).GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            string jsonData = task.Result.GetRawJsonValue();
-
-            if (task.Exception != null)
-                Debug.LogWarning(task.Exception);
-
-            foreach (var item in task.Result.Children)
-            {
-                Debug.Log(item.GetRawJsonValue());
-            }
-        });
     }
 
     public void SimpleSignIn()
@@ -204,7 +182,7 @@ public class DatabaseAPI : MonoBehaviour
         var gameID = "123456";
         var playerInfoJson = JsonUtility.ToJson(playerInfo);
 
-        db.RootReference.Child("game session").Child(gameID).Push().SetRawJsonValueAsync(playerInfoJson)
+        db.RootReference.Child("game session/" + gameID).Push().SetRawJsonValueAsync(playerInfoJson)
             .ContinueWith(task =>
             {
                 if (task.IsCanceled || task.IsFaulted)
@@ -215,6 +193,61 @@ public class DatabaseAPI : MonoBehaviour
                 else callback();
 
             });
+    }
+    
+    public void CreateGameSession(GameInfo gameInfo)
+    {
+        
+        var path = gameInfo.gameSessionID;
+        var gameInfoJson = JsonUtility.ToJson(gameInfo);
+
+        db.RootReference.Child("game session/" + path).SetRawJsonValueAsync(gameInfoJson)
+            .ContinueWith(task =>
+            {
+                if (task.IsCanceled || task.IsFaulted)
+                {
+                    Debug.Log(task.Exception);
+                }
+
+                else Debug.Log("Success! Data was written to: " + path);
+
+            });
+    }
+
+    public void JoinGame(string sessionID)
+    {
+        var gameInfo = new GameInfo(sessionID, false);
+        var waitingForPlayersJson = JsonUtility.ToJson(gameInfo.waitingForPlayers);
+        var gameInfoJson = JsonUtility.ToJson(gameInfo);
+
+        db.RootReference.Child("game session/" + sessionID).SetRawJsonValueAsync(gameInfoJson).ContinueWith(
+            task =>
+            {
+                if (task.IsCanceled || task.IsFaulted)
+                {
+                    Debug.Log(task.Exception);
+                }
+                
+                else Debug.Log("Joined Session");
+                
+            });
+    }
+
+    public void LoadDataMultiple(string path, OnLoadedDelegate onLoadedDelegate)
+    {
+        db.RootReference.Child(path).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            string jsonData = task.Result.GetRawJsonValue();
+
+            if (task.Exception != null)
+                Debug.LogWarning(task.Exception);
+
+            foreach (var item in task.Result.Children)
+            {
+                onLoadedDelegate(item.GetRawJsonValue());
+                Debug.Log(item);
+            }
+        });
     }
 
     public void ListenForEnemyAction(Action<PlayerInfo> callback, Action<AggregateException> fallback)
@@ -236,8 +269,8 @@ public class DatabaseAPI : MonoBehaviour
         db.RootReference.Child("game session").Child(gameID).ChildAdded += CurrentListener;
 
     }
+
     
-   
 
     public void SetPlayerID()
     {

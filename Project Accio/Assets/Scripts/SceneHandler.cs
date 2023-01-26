@@ -11,7 +11,7 @@ public class SceneHandler : MonoBehaviour
     {
         if (SceneManager.GetSceneByName("Matchmaking").isLoaded)
         {
-            Invoke(nameof(ConnectToGame), 2f);
+            //Invoke(nameof(ConnectToGame), 2f);
         }
     }
 
