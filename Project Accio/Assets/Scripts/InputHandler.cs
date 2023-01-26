@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InputHandler : MonoBehaviour
@@ -52,6 +53,7 @@ public class InputHandler : MonoBehaviour
         var newButton = Instantiate(buttonPrefab, publicGamesListHolder).GetComponent<Button>();
         newButton.GetComponentInChildren<TextMeshProUGUI>().text = gameInfo.gameSessionID;
         newButton.onClick.AddListener(() => DatabaseAPI.Instance.JoinGame(gameInfo.gameSessionID));
+        newButton.onClick.AddListener(() => SceneManager.LoadScene("GamePlay"));
     }
     
     
@@ -106,6 +108,7 @@ public class InputHandler : MonoBehaviour
         var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
         var playerID = GameManager.Instance.playerID;
         var sequencePosition = GameManager.Instance.sequence.sequencePosition;
+        var gameSessionID = GameManager.Instance.gameSessionID;
 
         if (DatabaseAPI.Instance.singlePlayerGame)
         {
@@ -114,7 +117,7 @@ public class InputHandler : MonoBehaviour
         }
         else
         {
-            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition), () =>
+            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition, gameSessionID), () =>
             {
                 // Action was sent!
             }, exception => { Debug.Log(exception); });

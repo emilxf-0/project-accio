@@ -3606,6 +3606,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 414609544}
     - target: {fileID: 4739642756359210438, guid: fea480fdcbce29a45bfb57033adf7532, type: 3}
+      propertyPath: gameSessionID
+      value: hermione
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739642756359210438, guid: fea480fdcbce29a45bfb57033adf7532, type: 3}
       propertyPath: healthManager
       value: 
       objectReference: {fileID: 1048840191}

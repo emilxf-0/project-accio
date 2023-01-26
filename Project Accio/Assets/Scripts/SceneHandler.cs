@@ -17,11 +17,13 @@ public class SceneHandler : MonoBehaviour
 
     private void OnEnable()
     {
+        DatabaseAPI.ConnectToGame += ConnectToGame;
         DatabaseAPI.LoginSuccessful += LoginSuccessful;
     }
 
     private void OnDisable()
     {
+        DatabaseAPI.ConnectToGame -= ConnectToGame;
         DatabaseAPI.LoginSuccessful -= LoginSuccessful;
     }
 
@@ -33,6 +35,7 @@ public class SceneHandler : MonoBehaviour
     public void LoginSuccessful()
     {
         SceneManager.LoadScene("MatchMaking");
+        Debug.Log("I'm loaded!");
     }
 
     public void ConnectToGame()

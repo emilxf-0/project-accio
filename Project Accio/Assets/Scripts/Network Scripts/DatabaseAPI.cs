@@ -33,6 +33,8 @@ public class DatabaseAPI : MonoBehaviour
     public bool isListening;
     
     public static event Action LoginSuccessful;
+    public static event Action ConnectToGame;
+    
     public PlayerHandler playerHandler;
     public bool singlePlayerGame;
     
@@ -43,12 +45,12 @@ public class DatabaseAPI : MonoBehaviour
     {
         instance = this;
         
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.Exception != null)
-                Debug.LogError(task.Exception);
-            
-        });
+        // FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        // {
+        //     if (task.Exception != null)
+        //         Debug.LogError(task.Exception);
+        //     
+        // });
             
             auth = FirebaseAuth.DefaultInstance;
             db = FirebaseDatabase.DefaultInstance;
@@ -63,6 +65,11 @@ public class DatabaseAPI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             DataTest(auth.CurrentUser.UserId, Random.Range(0, 100).ToString());
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            ConnectToGame.Invoke();
         }
         
     }
@@ -179,10 +186,9 @@ public class DatabaseAPI : MonoBehaviour
 
     public void SendAction(PlayerInfo playerInfo, Action callback, Action<AggregateException> fallback)
     {
-        var gameID = "123456";
         var playerInfoJson = JsonUtility.ToJson(playerInfo);
 
-        db.RootReference.Child("game session/" + gameID).Push().SetRawJsonValueAsync(playerInfoJson)
+        db.RootReference.Child("game session/" + GameManager.Instance.gameSessionID).Push().SetRawJsonValueAsync(playerInfoJson)
             .ContinueWith(task =>
             {
                 if (task.IsCanceled || task.IsFaulted)
@@ -197,6 +203,7 @@ public class DatabaseAPI : MonoBehaviour
     
     public void CreateGameSession(GameInfo gameInfo)
     {
+        GameManager.Instance.gameSessionID = gameInfo.gameSessionID;
         
         var path = gameInfo.gameSessionID;
         var gameInfoJson = JsonUtility.ToJson(gameInfo);
@@ -209,15 +216,20 @@ public class DatabaseAPI : MonoBehaviour
                     Debug.Log(task.Exception);
                 }
 
-                else Debug.Log("Success! Data was written to: " + path);
+                else
+                {
+                    ConnectToGame.Invoke();
+                    Debug.Log("Success! Data was written to: " + path);
+                }
 
             });
     }
 
     public void JoinGame(string sessionID)
     {
+        GameManager.Instance.gameSessionID = sessionID;
+        
         var gameInfo = new GameInfo(sessionID, false);
-        var waitingForPlayersJson = JsonUtility.ToJson(gameInfo.waitingForPlayers);
         var gameInfoJson = JsonUtility.ToJson(gameInfo);
 
         db.RootReference.Child("game session/" + sessionID).SetRawJsonValueAsync(gameInfoJson).ContinueWith(
@@ -227,9 +239,11 @@ public class DatabaseAPI : MonoBehaviour
                 {
                     Debug.Log(task.Exception);
                 }
-                
-                else Debug.Log("Joined Session");
-                
+
+                else
+                {
+                    Debug.Log("Joining Session");
+                }
             });
     }
 
@@ -269,9 +283,7 @@ public class DatabaseAPI : MonoBehaviour
         db.RootReference.Child("game session").Child(gameID).ChildAdded += CurrentListener;
 
     }
-
     
-
     public void SetPlayerID()
     {
         GameManager.Instance.playerID = auth.CurrentUser.UserId;
