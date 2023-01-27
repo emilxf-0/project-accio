@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class Sequence : MonoBehaviour
 {
     public List<string> currentSequence = new();
-    public List<Image> currentItemImage = new();
+    public List<SpriteRenderer> currentItemImage = new();
     public GameObject sequenceItemPrefab;
     public Transform sequenceTransform;
     
@@ -21,7 +21,7 @@ public class Sequence : MonoBehaviour
 
     private void Start()
     {
-        CreateSequence(4);
+        CreateSequence(1);
     }
 
     private void Update()
@@ -39,11 +39,11 @@ public class Sequence : MonoBehaviour
             var randomDirection = Random.Range(0, 4);
             var newArrow = Instantiate(sequenceItemPrefab, transform.position, Quaternion.identity);
             
-            newArrow.transform.SetParent(sequenceTransform, false);
-            newArrow.GetComponent<Image>().sprite = newArrow.GetComponent<SequenceItem>().possibleActions[randomDirection];
+            newArrow.transform.SetParent(sequenceTransform, true);
+            newArrow.GetComponent<SpriteRenderer>().sprite = newArrow.GetComponent<SequenceItem>().possibleActions[randomDirection];
             //newArrow.GetComponent<SequenceItem>().sequenceID = i; //Sets the sequenceitemID to current position
             
-            currentItemImage.Add(newArrow.GetComponent<Image>());
+            currentItemImage.Add(newArrow.GetComponent<SpriteRenderer>());
 
             switch (randomDirection)
             {
@@ -100,7 +100,7 @@ public class Sequence : MonoBehaviour
         currentSequence.Clear();
         currentItemImage.Clear();
         DestroySequence();
-        CreateSequence(4);
+        CreateSequence(1);
     }
 
     public void DestroySequence()
