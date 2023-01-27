@@ -42,4 +42,9 @@ public class SceneHandler : MonoBehaviour
     {
         SceneManager.LoadScene("GamePlay");
     }
+
+    public void GoToLoadingScene()
+    {
+        SceneManager.LoadScene("Loading Scene");
+    }
 }

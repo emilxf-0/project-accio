@@ -108,7 +108,7 @@ public class InputHandler : MonoBehaviour
         var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
         var playerID = GameManager.Instance.playerID;
         var sequencePosition = GameManager.Instance.sequence.sequencePosition;
-        var gameSessionID = GameManager.Instance.gameSessionID;
+        var gameSessionID = GameManager.gameSessionID;
 
         if (DatabaseAPI.Instance.singlePlayerGame)
         {

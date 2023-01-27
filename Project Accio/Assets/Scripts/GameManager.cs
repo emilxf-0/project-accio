@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     public Sequence sequence;
     public Timer timer;
 
-    public string gameSessionID;
+    public static string gameSessionID;
 
 
     private void Awake()

@@ -6,7 +6,6 @@ using Firebase.Extensions;
 using Firebase.Auth;
 using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.VersionControl;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -188,7 +187,7 @@ public class DatabaseAPI : MonoBehaviour
     {
         var playerInfoJson = JsonUtility.ToJson(playerInfo);
 
-        db.RootReference.Child("game session/" + GameManager.Instance.gameSessionID).Push().SetRawJsonValueAsync(playerInfoJson)
+        db.RootReference.Child("game session/" + GameManager.gameSessionID).Push().SetRawJsonValueAsync(playerInfoJson)
             .ContinueWith(task =>
             {
                 if (task.IsCanceled || task.IsFaulted)
@@ -203,7 +202,7 @@ public class DatabaseAPI : MonoBehaviour
     
     public void CreateGameSession(GameInfo gameInfo)
     {
-        GameManager.Instance.gameSessionID = gameInfo.gameSessionID;
+        GameManager.gameSessionID = gameInfo.gameSessionID;
         
         var path = gameInfo.gameSessionID;
         var gameInfoJson = JsonUtility.ToJson(gameInfo);
@@ -218,7 +217,7 @@ public class DatabaseAPI : MonoBehaviour
 
                 else
                 {
-                    ConnectToGame.Invoke();
+                    db.RootReference.Child("game session").ChildChanged += ListenForPlayers;
                     Debug.Log("Success! Data was written to: " + path);
                 }
 
@@ -227,7 +226,7 @@ public class DatabaseAPI : MonoBehaviour
 
     public void JoinGame(string sessionID)
     {
-        GameManager.Instance.gameSessionID = sessionID;
+        GameManager.gameSessionID = sessionID;
         
         var gameInfo = new GameInfo(sessionID, false);
         var gameInfoJson = JsonUtility.ToJson(gameInfo);
@@ -271,7 +270,6 @@ public class DatabaseAPI : MonoBehaviour
             return;
         }
         
-        var gameID = "123456";
         Debug.Log("I'm listening!");
         
         void CurrentListener(object o, ChildChangedEventArgs args)
@@ -280,8 +278,27 @@ public class DatabaseAPI : MonoBehaviour
             else callback(JsonUtility.FromJson<PlayerInfo>(args.Snapshot.GetRawJsonValue()));
         }
 
-        db.RootReference.Child("game session").Child(gameID).ChildAdded += CurrentListener;
+        db.RootReference.Child("game session").Child(GameManager.gameSessionID).ChildAdded += CurrentListener;
 
+    }
+    
+    
+    void ListenForPlayers(object o, ChildChangedEventArgs args)
+    {
+        Debug.Log("Hallå ja");
+        if (args.DatabaseError != null)
+        {
+            Debug.Log(args.DatabaseError);
+        }
+        else
+        {
+            Debug.Log(args.Snapshot.GetRawJsonValue());
+            var gameInfo = JsonUtility.FromJson<GameInfo>(args.Snapshot.GetRawJsonValue());
+
+            if (gameInfo.waitingForPlayers != false) return;
+            SceneManager.LoadScene("GamePlay");
+            db.RootReference.Child("game session").Child(GameManager.gameSessionID).ChildChanged -= ListenForPlayers;
+        }
     }
     
     public void SetPlayerID()
