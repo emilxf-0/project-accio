@@ -36,7 +36,7 @@ public class Sequence : MonoBehaviour
     {
         for (int i = 0; i < lengthOfSequence; i++)
         {
-            var randomDirection = Random.Range(0, 3);
+            var randomDirection = Random.Range(0, 4);
             var newArrow = Instantiate(sequenceItemPrefab, transform.position, Quaternion.identity);
             
             newArrow.transform.SetParent(sequenceTransform, false);
@@ -110,7 +110,5 @@ public class Sequence : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
-    
-    
-    
+
 }
