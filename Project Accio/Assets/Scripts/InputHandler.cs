@@ -1,7 +1,10 @@
 
+using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class InputHandler : MonoBehaviour
 {
@@ -12,6 +15,48 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private TMP_Text signupEmail;
     [SerializeField] private TMP_Text signupPassword;
     [SerializeField] private GameObject signupPanel;
+
+    [SerializeField] private Transform publicGamesListHolder;
+    public GameObject buttonPrefab;
+    
+
+
+    public void CreateNewGame(string gamekey)
+    {
+        DatabaseAPI.Instance.CreateGameSession(new GameInfo(gamekey, true));
+    }
+    
+    public void ListGames()
+    {
+        Debug.Log("Listing Games");
+
+        foreach (Transform child in publicGamesListHolder)
+            GameObject.Destroy(child.gameObject);
+
+        DatabaseAPI.Instance.LoadDataMultiple("game session/", ShowGames);
+    }
+    
+    public void ShowGames(string json)
+    {
+        Debug.Log("The JSON is: " + json);
+        var gameInfo = JsonUtility.FromJson<GameInfo>(json);
+        
+        Debug.Log("The gameinfo is: " + gameInfo.gameSessionID);
+        
+
+        if (gameInfo.waitingForPlayers == false)
+        {
+            // Don't list our own games or full games.
+            return;
+        }
+
+        var newButton = Instantiate(buttonPrefab, publicGamesListHolder).GetComponent<Button>();
+        newButton.GetComponentInChildren<TextMeshProUGUI>().text = gameInfo.gameSessionID;
+        newButton.onClick.AddListener(() => DatabaseAPI.Instance.JoinGame(gameInfo.gameSessionID));
+        newButton.onClick.AddListener(() => SceneManager.LoadScene("GamePlay"));
+    }
+    
+    
     
     public void GetButtonInput(string id)
     {
@@ -63,6 +108,7 @@ public class InputHandler : MonoBehaviour
         var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
         var playerID = GameManager.Instance.playerID;
         var sequencePosition = GameManager.Instance.sequence.sequencePosition;
+        var gameSessionID = GameManager.gameSessionID;
 
         if (DatabaseAPI.Instance.singlePlayerGame)
         {
@@ -71,7 +117,7 @@ public class InputHandler : MonoBehaviour
         }
         else
         {
-            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition), () =>
+            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition, gameSessionID), () =>
             {
                 // Action was sent!
             }, exception => { Debug.Log(exception); });

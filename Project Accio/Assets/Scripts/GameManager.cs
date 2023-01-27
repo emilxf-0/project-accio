@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
 
     public string playerID = "187";
     public bool gameHasStarted = false;
-    
 
     private float lastEnemyTimestamp;
     private int lastEnemyPosition;
@@ -38,8 +37,10 @@ public class GameManager : MonoBehaviour
     public HealthManager healthManager;
     public Sequence sequence;
     public Timer timer;
-    
-    
+
+    public static string gameSessionID;
+
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -51,7 +52,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
     }
-    
+
     private void OnEnable()
     {
         HealthManager.PlayerDeath += PlayerDeath;

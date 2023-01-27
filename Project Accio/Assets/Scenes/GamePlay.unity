@@ -1942,10 +1942,10 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.46
+      - m_Value: 0.79
         m_Name: NoiseSpeed
         m_Overridden: 1
-      - m_Value: -0.2
+      - m_Value: 0.09
         m_Name: NoisePower
         m_Overridden: 1
       - m_Value: 3.29
@@ -1958,10 +1958,10 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: -1.97, y: 0.88000005, z: 0}
+      - m_Value: {x: -0.16999999, y: 1.53, z: 0}
         m_Name: Pos1
         m_Overridden: 1
-      - m_Value: {x: -1.9200001, y: 0.96800005, z: 0}
+      - m_Value: {x: -0.12, y: 1.618, z: 0}
         m_Name: Pos2
         m_Overridden: 1
       - m_Value: {x: 2.41, y: 4.17, z: 0}
@@ -2407,7 +2407,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1183569825}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.96, y: 0.17, z: 0}
+  m_LocalPosition: {x: -0.16, y: 0.82, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3020,10 +3020,10 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: -1.97, y: 0.83200043, z: 0}
+      - m_Value: {x: -0.16999999, y: 1.4820004, z: 0}
         m_Name: Pos1
         m_Overridden: 1
-      - m_Value: {x: -1.9200001, y: 0.9199998, z: 0}
+      - m_Value: {x: -0.120000035, y: 1.5699997, z: 0}
         m_Name: Pos2
         m_Overridden: 1
       - m_Value: {x: -2.07, y: -2.83, z: 0}
@@ -3605,6 +3605,10 @@ PrefabInstance:
       propertyPath: gameOverText
       value: 
       objectReference: {fileID: 414609544}
+    - target: {fileID: 4739642756359210438, guid: fea480fdcbce29a45bfb57033adf7532, type: 3}
+      propertyPath: gameSessionID
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4739642756359210438, guid: fea480fdcbce29a45bfb57033adf7532, type: 3}
       propertyPath: healthManager
       value: 
