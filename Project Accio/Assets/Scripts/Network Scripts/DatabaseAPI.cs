@@ -285,7 +285,6 @@ public class DatabaseAPI : MonoBehaviour
     
     void ListenForPlayers(object o, ChildChangedEventArgs args)
     {
-        Debug.Log("Hallå ja");
         if (args.DatabaseError != null)
         {
             Debug.Log(args.DatabaseError);
