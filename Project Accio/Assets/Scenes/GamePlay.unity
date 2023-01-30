@@ -2872,7 +2872,7 @@ GameObject:
   - component: {fileID: 1444937781}
   - component: {fileID: 1444937780}
   m_Layer: 0
-  m_Name: TouchInput
+  m_Name: TouchInputHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
