@@ -7,7 +7,11 @@ public class TouchInput : MonoBehaviour
     private List<Vector3> userInputPoints = new List<Vector3>();
 
     LineRenderer lineRenderer;
+    private Timer timer;
 
+    private float fadeTime = 1f;
+    private float fadeStartTime;
+    
     void Start()
     {
         lineRenderer = gameObject.AddComponent<LineRenderer>();
@@ -36,12 +40,34 @@ public class TouchInput : MonoBehaviour
 
             if (touch.phase == TouchPhase.Ended)
             {
-                FadeLine();
+                fadeStartTime = Time.time;
             }
         }
+
+        float timeSinceStart = Time.time - fadeStartTime;
+        
+        if (timeSinceStart < fadeTime)
+        {
+            var t = timeSinceStart / fadeTime;
+            
+            lineRenderer.startColor = Color.Lerp(Color.white, Color.clear, t);
+            lineRenderer.endColor = Color.Lerp(Color.white, Color.clear, t);
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            lineRenderer.positionCount = 0;
+        }
+        
     }
 
-    void FadeLine()
+    void ClearLines()
+    {
+        userInputPoints.Clear();
+        lineRenderer.SetPositions(userInputPoints.ToArray());
+    }
+
+    void FadeLine(float fadeStart)
     {
         lineRenderer.startColor = Color.Lerp(Color.white, Color.clear, 0);
         lineRenderer.endColor = Color.Lerp(Color.white, Color.clear, 0);
