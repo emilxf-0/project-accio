@@ -32,6 +32,9 @@ public class TouchInput : MonoBehaviour
     
     void Update()
     {
+        currentSymbol = GameManager.Instance.sequence.currentSequenceItem;
+        
+        
         if (Input.touchCount > 0)
         {
             StartGame();

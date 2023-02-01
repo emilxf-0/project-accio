@@ -48,16 +48,16 @@ public class Sequence : MonoBehaviour
             switch (randomDirection)
             {
                 case 0:
-                    currentSequence.Add("right");
+                    currentSequence.Add("triangle");
                     break;
                 case 1:
-                    currentSequence.Add("left");
+                    currentSequence.Add("square");
                     break;
                 case 2:
-                    currentSequence.Add("up");
+                    currentSequence.Add("pentagram");
                     break;
                 case 3:
-                    currentSequence.Add("down");
+                    currentSequence.Add("lightning");
                     break;
             }
 

@@ -133,10 +133,6 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    
-
-
-
     public void SignOutFromGame()
     {
         DatabaseAPI.Instance.SignOut();
