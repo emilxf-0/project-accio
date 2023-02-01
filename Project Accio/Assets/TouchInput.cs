@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TouchInput : MonoBehaviour
@@ -10,21 +11,22 @@ public class TouchInput : MonoBehaviour
     private List<Vector3> userInputPoints = new List<Vector3>();
 
     private LineRenderer lineRenderer;
-    public LineRenderer preDefinedCircle;
+    public LineRenderer[] preDefinedSymbol;
     private Timer timer;
 
     private float fadeTime = 1f;
     private float fadeStartTime;
     private bool startFade;
+    private string currentSymbol;
 
-    private Vector3[] preDefinedCirclePoints;
-    private Vector3[] userCirclePoints;
+    private Vector3[] preDefinedSymbolPoints;
+    private Vector3[] userSymbolPoints;
     
     
     void Start()
     {
-        //DrawCircle(100,1);
-        preDefinedCirclePoints = new Vector3[preDefinedCircle.positionCount];
+        currentSymbol = "triangle";
+        preDefinedSymbolPoints = new Vector3[preDefinedSymbol[ChooseSymbol(currentSymbol)].positionCount];
         CreateNewLineRenderer();
     }
     
@@ -32,6 +34,8 @@ public class TouchInput : MonoBehaviour
     {
         if (Input.touchCount > 0)
         {
+            StartGame();
+            
             Touch touch = Input.GetTouch(0);
 
             if (touch.phase == TouchPhase.Moved)
@@ -46,12 +50,14 @@ public class TouchInput : MonoBehaviour
 
             if (touch.phase == TouchPhase.Ended)
             {
-                userCirclePoints = new Vector3[lineRenderer.positionCount];
+                userSymbolPoints = new Vector3[lineRenderer.positionCount];
                 fadeStartTime = Time.time;
                 startFade = true;
 
                 var cumulativeValue = Match();
                 Debug.Log("The cumulative value is: " + cumulativeValue);
+                CompareInputWithSymbol();
+                SendPlayerInfo();
             }
 
         }
@@ -62,8 +68,6 @@ public class TouchInput : MonoBehaviour
         }
         
         FadeLine();
-        
-        
     }
     
     void FadeLine()
@@ -81,36 +85,94 @@ public class TouchInput : MonoBehaviour
         {
             ResetLineRenderer();
             startFade = false;
-            Debug.Log("I've reset everything now jao!");
         }
+    }
+
+    void CompareInputWithSymbol()
+    {
+        var thresholdValue = Match();
+
+        switch (ChooseSymbol(currentSymbol))
+        {
+            case 0:
+                if (thresholdValue is >= 108 and <= 150)
+                {
+                    Debug.Log("It's a perfect triangle");
+                    GameManager.Instance.sequence.CompareInputWithSequence(true);
+                }
+                else
+                {
+                    GameManager.Instance.sequence.CompareInputWithSequence(false);
+                }
+                
+
+                return;
+            case 1:
+                if (thresholdValue is >= 200 and <= 246)
+                {
+                    Debug.Log("It's a perfect square");
+                    GameManager.Instance.sequence.CompareInputWithSequence(true);
+                }
+                else
+                {
+                    GameManager.Instance.sequence.CompareInputWithSequence(false);
+                }
+                
+                return;
+            case 2:
+                if (thresholdValue is >= 265 and <= 365)
+                {
+                    Debug.Log("It's a perfect pentagram. Hail Satan!");
+                    GameManager.Instance.sequence.CompareInputWithSequence(true);
+                }
+                else
+                {
+                    GameManager.Instance.sequence.CompareInputWithSequence(false);
+                }
+                
+                return;
+            case 3:
+                if (thresholdValue is >= 88 and <= 118)
+                {
+                    Debug.Log("It's a perfect lightning.");
+                    GameManager.Instance.sequence.CompareInputWithSequence(true);
+                }
+                else
+                {
+                    GameManager.Instance.sequence.CompareInputWithSequence(false);
+                }
+                
+                return;
+        }
+
     }
 
     public float Match()
     {
-        float[] distanceRow = new float[preDefinedCirclePoints.Length + 1];
+        float[] distanceRow = new float[preDefinedSymbolPoints.Length + 1];
 
-        for (int j = 0; j <= preDefinedCirclePoints.Length; j++)
+        for (int j = 0; j <= preDefinedSymbolPoints.Length; j++)
         {
             distanceRow[j] = float.PositiveInfinity;
         }
         
         distanceRow[0] = 0;
         
-        for (int i = 1; i <= userCirclePoints.Length; i++)
+        for (int i = 1; i <= userSymbolPoints.Length; i++)
         {
-            float[] newDistanceRow = new float[preDefinedCirclePoints.Length + 1];
+            float[] newDistanceRow = new float[preDefinedSymbolPoints.Length + 1];
             newDistanceRow[0] = float.PositiveInfinity;
             
-            for (int j = 1; j <= preDefinedCirclePoints.Length; j++)
+            for (int j = 1; j <= preDefinedSymbolPoints.Length; j++)
             {
-                float cost = Vector3.Distance(userInputPoints[i - 1], preDefinedCirclePoints[j - 1]);
+                float cost = Vector3.Distance(userInputPoints[i - 1], preDefinedSymbolPoints[j - 1]);
                 newDistanceRow[j] = cost + Mathf.Min(distanceRow[j], Mathf.Min(newDistanceRow[j - 1], distanceRow[j - 1]));
             }
 
             distanceRow = newDistanceRow;
         }
 
-        return distanceRow[preDefinedCirclePoints.Length];
+        return distanceRow[preDefinedSymbolPoints.Length];
     }
 
     void CreateNewLineRenderer()
@@ -131,23 +193,50 @@ public class TouchInput : MonoBehaviour
         lineRenderer.endColor = Color.white;
     }
 
-    void DrawCircle(int steps, float radius)
+    private int ChooseSymbol(string nameOfSymbol)
     {
-        preDefinedCircle.positionCount = steps;
-
-        for (int i = 0; i < steps; i++)
+        switch (nameOfSymbol)
         {
-            var circumferenceProgress = (float)i / steps;
-            var currentRadian = circumferenceProgress * 2 * Mathf.PI;
-            var xScaled = Mathf.Cos(currentRadian);
-            var yScaled = Mathf.Sin(currentRadian);
-
-            var x = xScaled * radius;
-            var y = yScaled * radius;
-
-            Vector3 currentPosition = new Vector3(x, y, 0);
+            case "triangle":
+                return 0;
             
-            preDefinedCircle.SetPosition(i, currentPosition);
+            case "square":
+                return 1;
+            
+            case "pentagram":
+                return 2;
+            
+            case "lightning":
+                return 3;
+        }
+
+        throw new ArgumentException("No match for: " +  nameOfSymbol);
+    }
+    
+    public void SendPlayerInfo()
+    {
+        var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
+        var playerID = GameManager.Instance.playerID;
+        var sequencePosition = GameManager.Instance.sequence.sequencePosition;
+        var gameSessionID = GameManager.gameSessionID;
+
+        if (DatabaseAPI.Instance.singlePlayerGame)
+        {
+            GameManager.Instance.latestPlayerTimestamp = playerReaction;
+            GameManager.Instance.SinglePlayerGame();
+        }
+        else
+        {
+            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition, gameSessionID), () =>
+            {
+                // Action was sent!
+            }, exception => { Debug.Log(exception); });
         }
     }
+    
+    public void StartGame()
+    {
+        GameManager.Instance.gameHasStarted = true;
+    }
+    
 }

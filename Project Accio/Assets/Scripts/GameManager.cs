@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameOver;
     public TMP_Text gameOverText;
     public HealthManager healthManager;
+    public TouchInput touchInputHandler;
     public Sequence sequence;
     public Timer timer;
 
@@ -118,11 +119,7 @@ public class GameManager : MonoBehaviour
     {
 
         var playerSequencePosition = sequence.sequencePosition;
-        
-        Debug.Log("Player stats are: " + playerTimeStamp + " and " + playerSequencePosition);
-        Debug.Log("Enemy stats are: " + enemyTimeStamp + " and " + enemyPosition);
-        Debug.Log("Enemy momentum is: " + healthManager.enemyMomentum);
-        
+
         if (sequence.inputMatchSequence == false)
         {
             //TODO increase damage multiplier
@@ -138,11 +135,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Now I'm healing!");
             healthManager.enemyMomentum = false;
         }
         
-        Debug.Log("And now Enemy momentum is: " + healthManager.enemyMomentum);
     }
 
     public void CheckIfPlayerShouldHaveMomentum()

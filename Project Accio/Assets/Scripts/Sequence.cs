@@ -37,13 +37,13 @@ public class Sequence : MonoBehaviour
         for (int i = 0; i < lengthOfSequence; i++)
         {
             var randomDirection = Random.Range(0, 4);
-            var newArrow = Instantiate(sequenceItemPrefab, transform.position, Quaternion.identity);
+            var newSymbol = Instantiate(sequenceItemPrefab, transform.position, Quaternion.identity);
             
-            newArrow.transform.SetParent(sequenceTransform, true);
-            newArrow.GetComponent<SpriteRenderer>().sprite = newArrow.GetComponent<SequenceItem>().possibleActions[randomDirection];
+            newSymbol.transform.SetParent(sequenceTransform, true);
+            newSymbol.GetComponent<SpriteRenderer>().sprite = newSymbol.GetComponent<SequenceItem>().possibleActions[randomDirection];
             //newArrow.GetComponent<SequenceItem>().sequenceID = i; //Sets the sequenceitemID to current position
             
-            currentItemImage.Add(newArrow.GetComponent<SpriteRenderer>());
+            currentItemImage.Add(newSymbol.GetComponent<SpriteRenderer>());
 
             switch (randomDirection)
             {
@@ -64,11 +64,11 @@ public class Sequence : MonoBehaviour
         }
     }
     
-    public void CompareInputWithSequence(string buttonID)
+    public void CompareInputWithSequence(bool symbolsMatch)
     {
         sequencePosition++;
         
-        if (buttonID == currentSequenceItem)
+        if (symbolsMatch)
         {
             inputMatchSequence = true;
             currentItemImage[item].color = Color.green;
