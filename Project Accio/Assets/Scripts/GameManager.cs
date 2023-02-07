@@ -132,6 +132,11 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        if (enemySymbolIsCorrect == false)
+        {
+            return;
+        }
         
         gameHasStarted = true;
         
@@ -195,6 +200,11 @@ public class GameManager : MonoBehaviour
 
         // If both players misses nothing happens
         if (enemyCreatedCorrectSymbol == false && sequence.inputMatchSequence == false)
+        {
+            return;
+        }
+
+        if (sequence.inputMatchSequence == false)
         {
             return;
         }

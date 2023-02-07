@@ -144,7 +144,7 @@ public class TouchInput : MonoBehaviour
 
             distanceRow = newDistanceRow;
         }
-
+        
         return distanceRow[preDefinedSymbolPoints.Length];
     }
 

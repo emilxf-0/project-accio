@@ -84,7 +84,9 @@ public class InputHandler : MonoBehaviour
 
     public void ResetGame()
     {
+        GameManager.Instance.gameHasStarted = false;
         GameManager.Instance.ResetGame();
+        
     }
 
     public void RegNewUser()
