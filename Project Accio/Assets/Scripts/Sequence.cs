@@ -66,7 +66,9 @@ public class Sequence : MonoBehaviour
     
     public void CompareInputWithSequence(bool symbolsMatch)
     {
+        Debug.Log("Sequence is: " + sequencePosition);
         sequencePosition++;
+        Debug.Log("And now sequence is: " + sequencePosition);
         
         if (symbolsMatch)
         {

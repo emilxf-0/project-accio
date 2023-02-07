@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TouchInput : MonoBehaviour
@@ -14,10 +10,12 @@ public class TouchInput : MonoBehaviour
     public LineRenderer[] preDefinedSymbol;
     private Timer timer;
 
-    private float fadeTime = 1f;
+    private float fadeTime = 0.3f;
     private float fadeStartTime;
     private bool startFade;
     private string currentSymbol;
+    //private bool symbolsMatch;
+    private int x;
 
     private Vector3[] preDefinedSymbolPoints;
     private Vector3[] userSymbolPoints;
@@ -25,20 +23,16 @@ public class TouchInput : MonoBehaviour
     
     void Start()
     {
-        currentSymbol = "triangle";
-        preDefinedSymbolPoints = new Vector3[preDefinedSymbol[ChooseSymbol(currentSymbol)].positionCount];
         CreateNewLineRenderer();
     }
     
     void Update()
     {
         currentSymbol = GameManager.Instance.sequence.currentSequenceItem;
-        
-        
+        preDefinedSymbolPoints = new Vector3[preDefinedSymbol[ChooseSymbol(currentSymbol)].positionCount];
+
         if (Input.touchCount > 0)
         {
-            StartGame();
-            
             Touch touch = Input.GetTouch(0);
 
             if (touch.phase == TouchPhase.Moved)
@@ -53,13 +47,16 @@ public class TouchInput : MonoBehaviour
 
             if (touch.phase == TouchPhase.Ended)
             {
+                x++;
                 userSymbolPoints = new Vector3[lineRenderer.positionCount];
                 fadeStartTime = Time.time;
                 startFade = true;
 
                 var cumulativeValue = Match();
                 Debug.Log("The cumulative value is: " + cumulativeValue);
-                CompareInputWithSymbol();
+                
+                GameManager.Instance.sequence.CompareInputWithSequence(CompareInputWithSymbol());
+                Debug.Log("x is: " + x);
                 SendPlayerInfo();
             }
 
@@ -91,62 +88,35 @@ public class TouchInput : MonoBehaviour
         }
     }
 
-    void CompareInputWithSymbol()
+    private bool CompareInputWithSymbol()
     {
         var thresholdValue = Match();
 
         switch (ChooseSymbol(currentSymbol))
         {
             case 0:
-                if (thresholdValue is >= 108 and <= 150)
-                {
-                    Debug.Log("It's a perfect triangle");
-                    GameManager.Instance.sequence.CompareInputWithSequence(true);
-                }
-                else
-                {
-                    GameManager.Instance.sequence.CompareInputWithSequence(false);
-                }
-                
+                if (thresholdValue is < 108 or > 150) return false;
+                Debug.Log("It's a perfect triangle");
+                return true;
 
-                return;
             case 1:
-                if (thresholdValue is >= 200 and <= 246)
-                {
-                    Debug.Log("It's a perfect square");
-                    GameManager.Instance.sequence.CompareInputWithSequence(true);
-                }
-                else
-                {
-                    GameManager.Instance.sequence.CompareInputWithSequence(false);
-                }
-                
-                return;
+                if (thresholdValue is < 200 or > 246) return false;
+                Debug.Log("It's a perfect square");
+                return true;
+
             case 2:
-                if (thresholdValue is >= 265 and <= 365)
-                {
-                    Debug.Log("It's a perfect pentagram. Hail Satan!");
-                    GameManager.Instance.sequence.CompareInputWithSequence(true);
-                }
-                else
-                {
-                    GameManager.Instance.sequence.CompareInputWithSequence(false);
-                }
-                
-                return;
+                if (thresholdValue is < 265 or > 365) return false;
+                Debug.Log("It's a perfect pentagram. Hail Satan!");
+                return true;
+
             case 3:
-                if (thresholdValue is >= 88 and <= 118)
-                {
-                    Debug.Log("It's a perfect lightning.");
-                    GameManager.Instance.sequence.CompareInputWithSequence(true);
-                }
-                else
-                {
-                    GameManager.Instance.sequence.CompareInputWithSequence(false);
-                }
-                
-                return;
+                if (thresholdValue is < 88 or > 118) return false;
+                Debug.Log("It's a perfect lightning.");
+                return true;
+
         }
+
+        throw new ArgumentException("No match for: " + ChooseSymbol(currentSymbol));
 
     }
 
@@ -222,7 +192,9 @@ public class TouchInput : MonoBehaviour
         var playerID = GameManager.Instance.playerID;
         var sequencePosition = GameManager.Instance.sequence.sequencePosition;
         var gameSessionID = GameManager.gameSessionID;
+        var createdCorrectSymbol = CompareInputWithSymbol();
 
+        
         if (DatabaseAPI.Instance.singlePlayerGame)
         {
             GameManager.Instance.latestPlayerTimestamp = playerReaction;
@@ -230,16 +202,11 @@ public class TouchInput : MonoBehaviour
         }
         else
         {
-            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition, gameSessionID), () =>
+            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition, gameSessionID, createdCorrectSymbol), () =>
             {
                 // Action was sent!
             }, exception => { Debug.Log(exception); });
         }
     }
-    
-    public void StartGame()
-    {
-        GameManager.Instance.gameHasStarted = true;
-    }
-    
+
 }

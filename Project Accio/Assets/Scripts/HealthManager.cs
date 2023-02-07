@@ -12,11 +12,12 @@ public class HealthManager : MonoBehaviour
     public float playerHealth;
     public float currentHealth;
     public bool enemyMomentum;
+    public float damage = 0.25f;
 
     public GameObject midPoint;
     public GameObject enemyPosition;
     public GameObject playerPosition;
-    
+
     public static event Action PlayerDeath; 
     
     void Start()
@@ -31,18 +32,18 @@ public class HealthManager : MonoBehaviour
     {
         slider.value = currentHealth;
 
-        while (GameManager.Instance.gameHasStarted == false)
+        if (GameManager.Instance.gameHasStarted == false)
         {
             return;
         }
         
         if (enemyMomentum)
         {
-            TakeDamage(0.75f);
+            TakeDamage(damage);
         }
         else
         {
-            Heal(0.75f);
+            Heal(damage);
         }
     }
 
