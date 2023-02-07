@@ -17,6 +17,7 @@ public class HealthManager : MonoBehaviour
     public GameObject midPoint;
     public GameObject enemyPosition;
     public GameObject playerPosition;
+    
 
     public static event Action PlayerDeath; 
     
@@ -39,29 +40,20 @@ public class HealthManager : MonoBehaviour
         
         if (enemyMomentum)
         {
-            TakeDamage(damage);
+            MoveTowards(playerPosition.transform.position, damage);
         }
         else
         {
-            Heal(damage);
+            MoveTowards(enemyPosition.transform.position, damage);
         }
     }
 
-    public void TakeDamage(float damageTaken)
+    private void MoveTowards(Vector2 endPoint, float amountToMove)
     {
-        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, playerPosition.transform.position, damageTaken * Time.deltaTime);
+        var toleranceLevel = 0.1f;
+        midPoint.transform.position = Vector2.Lerp(midPoint.transform.position, endPoint, amountToMove * Time.deltaTime);
         
-        if (midPoint.transform.position == playerPosition.transform.position)
-        {
-            PlayerDeath.Invoke();
-        }
-    }
-
-    public void Heal(float hpToHeal)
-    {
-        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, enemyPosition.transform.position, hpToHeal * Time.deltaTime);
-        
-        if (midPoint.transform.position == enemyPosition.transform.position)
+        if (Vector2.Distance(midPoint.transform.position, endPoint) < toleranceLevel)
         {
             PlayerDeath.Invoke();
         }
