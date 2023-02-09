@@ -55,7 +55,7 @@ public class HealthManager : MonoBehaviour
         
         if (Vector2.Distance(midPoint.transform.position, endPoint) < toleranceLevel)
         {
-            PlayerDeath.Invoke();
+            PlayerDeath?.Invoke();
         }
     }
 

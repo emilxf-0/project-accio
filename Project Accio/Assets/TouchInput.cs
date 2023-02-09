@@ -6,10 +6,11 @@ public class TouchInput : MonoBehaviour
 {
     private List<Vector3> userInputPoints = new List<Vector3>();
 
-    private LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
     public LineRenderer[] preDefinedSymbol;
     private Timer timer;
-
+    public new ParticleSystem particleSystem;
+    
     private float fadeTime = 0.3f;
     private float fadeStartTime;
     private bool startFade;
@@ -23,7 +24,7 @@ public class TouchInput : MonoBehaviour
     
     void Start()
     {
-        CreateNewLineRenderer();
+        //CreateNewLineRenderer();
     }
     
     void Update()
@@ -37,16 +38,19 @@ public class TouchInput : MonoBehaviour
 
             if (touch.phase == TouchPhase.Moved)
             {
+                particleSystem.Play();
                 Vector3 screenPos = touch.position;
                 screenPos.z = Camera.main.nearClipPlane;
                 Vector3 touchWorldPos = Camera.main.ScreenToWorldPoint(screenPos);
                 userInputPoints.Add(touchWorldPos);
                 lineRenderer.positionCount = userInputPoints.Count;
                 lineRenderer.SetPositions(userInputPoints.ToArray());
+                particleSystem.transform.position = touchWorldPos;
             }
 
             if (touch.phase == TouchPhase.Ended)
             {
+                particleSystem.Stop();
                 x++;
                 userSymbolPoints = new Vector3[lineRenderer.positionCount];
                 fadeStartTime = Time.time;
@@ -78,8 +82,8 @@ public class TouchInput : MonoBehaviour
         {
             var t = timeSinceStart / fadeTime;
             
-            lineRenderer.startColor = Color.Lerp(Color.white, Color.clear, t);
-            lineRenderer.endColor = Color.Lerp(Color.white, Color.clear, t);
+            lineRenderer.startColor = Color.Lerp(Color.yellow, Color.clear, t);
+            lineRenderer.endColor = Color.Lerp(Color.yellow, Color.clear, t);
         }
         else
         {
@@ -152,8 +156,8 @@ public class TouchInput : MonoBehaviour
     {
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.startColor = Color.white;
-        lineRenderer.endColor = Color.white;
+        lineRenderer.startColor = Color.yellow;
+        lineRenderer.endColor = Color.yellow;
         lineRenderer.startWidth = 0.1f;
         lineRenderer.endWidth = 0.1f;
     }
@@ -162,8 +166,8 @@ public class TouchInput : MonoBehaviour
     {
         lineRenderer.positionCount = 0;
         userInputPoints.Clear();
-        lineRenderer.startColor = Color.white;
-        lineRenderer.endColor = Color.white;
+        lineRenderer.startColor = Color.yellow;
+        lineRenderer.endColor = Color.yellow;
     }
 
     private int ChooseSymbol(string nameOfSymbol)
