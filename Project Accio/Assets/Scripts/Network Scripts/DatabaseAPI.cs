@@ -68,7 +68,7 @@ public class DatabaseAPI : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            ConnectToGame.Invoke();
+            ConnectToGame?.Invoke();
         }
         
     }
@@ -78,7 +78,7 @@ public class DatabaseAPI : MonoBehaviour
         // If user already have a userid just let them pass
         if (auth.CurrentUser != null)
         {
-            LoginSuccessful.Invoke();
+            LoginSuccessful?.Invoke();
         }
         else 
         {
@@ -93,7 +93,7 @@ public class DatabaseAPI : MonoBehaviour
                 Debug.LogFormat("User signed in successfully: {0} ({1})",
                     newUser.DisplayName, newUser.UserId);
                 
-                LoginSuccessful.Invoke();
+                LoginSuccessful?.Invoke();
             }
             });
             

@@ -14,7 +14,7 @@ public class TouchInput : MonoBehaviour
     private float fadeTime = 0.3f;
     private float fadeStartTime;
     private bool startFade;
-    private string currentSymbol;
+    private GameManager.Symbols currentSymbol;
     //private bool symbolsMatch;
     private int x;
 
@@ -22,15 +22,11 @@ public class TouchInput : MonoBehaviour
     private Vector3[] userSymbolPoints;
     
     
-    void Start()
-    {
-        //CreateNewLineRenderer();
-    }
     
     void Update()
     {
         currentSymbol = GameManager.Instance.sequence.currentSequenceItem;
-        preDefinedSymbolPoints = new Vector3[preDefinedSymbol[ChooseSymbol(currentSymbol)].positionCount];
+        preDefinedSymbolPoints = new Vector3[preDefinedSymbol[(int)currentSymbol].positionCount];
 
         if (Input.touchCount > 0)
         {
@@ -43,8 +39,11 @@ public class TouchInput : MonoBehaviour
                 screenPos.z = Camera.main.nearClipPlane;
                 Vector3 touchWorldPos = Camera.main.ScreenToWorldPoint(screenPos);
                 userInputPoints.Add(touchWorldPos);
+                
+                // Ugly hack to get better threshold values for the DTR algorithm
                 lineRenderer.positionCount = userInputPoints.Count;
                 lineRenderer.SetPositions(userInputPoints.ToArray());
+                
                 particleSystem.transform.position = touchWorldPos;
             }
 
@@ -59,7 +58,7 @@ public class TouchInput : MonoBehaviour
                 var cumulativeValue = Match();
                 Debug.Log("The cumulative value is: " + cumulativeValue);
                 
-                GameManager.Instance.sequence.CompareInputWithSequence(CompareInputWithSymbol());
+                GameManager.Instance.sequence.CompareInputWithSequence(CompareInputWithSymbol(currentSymbol));
                 Debug.Log("x is: " + x);
                 SendPlayerInfo();
             }
@@ -92,39 +91,39 @@ public class TouchInput : MonoBehaviour
         }
     }
 
-    private bool CompareInputWithSymbol()
+    private bool CompareInputWithSymbol(GameManager.Symbols symbols)
     {
         var thresholdValue = Match();
 
-        switch (ChooseSymbol(currentSymbol))
+        switch (symbols)
         {
-            case 0:
+            case GameManager.Symbols.TRIANGLE:
                 if (thresholdValue is < 108 or > 150) return false;
                 Debug.Log("It's a perfect triangle");
                 return true;
 
-            case 1:
+            case GameManager.Symbols.SQUARE:
                 if (thresholdValue is < 200 or > 246) return false;
                 Debug.Log("It's a perfect square");
                 return true;
 
-            case 2:
+            case GameManager.Symbols.PENTAGRAM:
                 if (thresholdValue is < 265 or > 365) return false;
                 Debug.Log("It's a perfect pentagram. Hail Satan!");
                 return true;
 
-            case 3:
+            case GameManager.Symbols.LIGHTNING:
                 if (thresholdValue is < 88 or > 118) return false;
                 Debug.Log("It's a perfect lightning.");
                 return true;
 
         }
 
-        throw new ArgumentException("No match for: " + ChooseSymbol(currentSymbol));
+        throw new ArgumentException("No match for: " + symbols);
 
     }
 
-    public float Match()
+    private float Match()
     {
         float[] distanceRow = new float[preDefinedSymbolPoints.Length + 1];
 
@@ -152,15 +151,7 @@ public class TouchInput : MonoBehaviour
         return distanceRow[preDefinedSymbolPoints.Length];
     }
 
-    void CreateNewLineRenderer()
-    {
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.startColor = Color.yellow;
-        lineRenderer.endColor = Color.yellow;
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
-    }
+   
 
     private void ResetLineRenderer()
     {
@@ -169,34 +160,14 @@ public class TouchInput : MonoBehaviour
         lineRenderer.startColor = Color.yellow;
         lineRenderer.endColor = Color.yellow;
     }
-
-    private int ChooseSymbol(string nameOfSymbol)
-    {
-        switch (nameOfSymbol)
-        {
-            case "triangle":
-                return 0;
-            
-            case "square":
-                return 1;
-            
-            case "pentagram":
-                return 2;
-            
-            case "lightning":
-                return 3;
-        }
-
-        throw new ArgumentException("No match for: " +  nameOfSymbol);
-    }
     
-    public void SendPlayerInfo()
+    private void SendPlayerInfo()
     {
         var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
         var playerID = GameManager.Instance.playerID;
         var sequencePosition = GameManager.Instance.sequence.sequencePosition;
         var gameSessionID = GameManager.gameSessionID;
-        var createdCorrectSymbol = CompareInputWithSymbol();
+        var createdCorrectSymbol = CompareInputWithSymbol(currentSymbol);
 
         
         if (DatabaseAPI.Instance.singlePlayerGame)

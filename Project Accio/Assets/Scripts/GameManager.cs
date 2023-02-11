@@ -62,6 +62,14 @@ public class GameManager : MonoBehaviour
     {
         HealthManager.PlayerDeath -= PlayerDeath;
     }
+    
+    public enum Symbols
+    {
+        TRIANGLE,
+        SQUARE,
+        PENTAGRAM,
+        LIGHTNING
+    };
 
     private void Start()
     {

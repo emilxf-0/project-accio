@@ -8,12 +8,12 @@ using Random = UnityEngine.Random;
 
 public class Sequence : MonoBehaviour
 {
-    public List<string> currentSequence = new();
+    public List<GameManager.Symbols> currentSequence = new();
     public List<SpriteRenderer> currentItemImage = new();
     public GameObject sequenceItemPrefab;
     public Transform sequenceTransform;
     
-    public string currentSequenceItem;
+    public GameManager.Symbols currentSequenceItem;
     public bool inputMatchSequence;
     public int sequencePosition = 0;
     
@@ -32,7 +32,7 @@ public class Sequence : MonoBehaviour
         }
     }
 
-    public void CreateSequence(int lengthOfSequence)
+    private void CreateSequence(int lengthOfSequence)
     {
         for (int i = 0; i < lengthOfSequence; i++)
         {
@@ -48,16 +48,16 @@ public class Sequence : MonoBehaviour
             switch (randomDirection)
             {
                 case 0:
-                    currentSequence.Add("triangle");
+                    currentSequence.Add(GameManager.Symbols.TRIANGLE);
                     break;
                 case 1:
-                    currentSequence.Add("square");
+                    currentSequence.Add(GameManager.Symbols.SQUARE);
                     break;
                 case 2:
-                    currentSequence.Add("pentagram");
+                    currentSequence.Add(GameManager.Symbols.PENTAGRAM);
                     break;
                 case 3:
-                    currentSequence.Add("lightning");
+                    currentSequence.Add(GameManager.Symbols.LIGHTNING);
                     break;
             }
 
@@ -84,7 +84,7 @@ public class Sequence : MonoBehaviour
         UpdateSequence();
     }
 
-    public void UpdateSequence()
+    private void UpdateSequence()
     {
         if (item != currentSequence.Count - 1)
         {
@@ -105,7 +105,7 @@ public class Sequence : MonoBehaviour
         CreateSequence(1);
     }
 
-    public void DestroySequence()
+    private void DestroySequence()
     {
         foreach (Transform child in sequenceTransform)
         {
