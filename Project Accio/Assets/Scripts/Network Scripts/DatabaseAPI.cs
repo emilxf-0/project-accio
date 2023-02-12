@@ -227,31 +227,6 @@ public class DatabaseAPI : MonoBehaviour
             });
     }
 
-    // public void SendAction(PlayerInfo playerInfo)
-    // {
-    //     var path = GameManager.gameSessionID;
-    //     var playerInfoJson = JsonUtility.ToJson(playerInfo);
-    //
-    //     db.RootReference.Child("game session/" + path).SetRawJsonValueAsync(playerInfoJson)
-    //         .ContinueWithOnMainThread(task =>
-    //         {
-    //             if (task.IsCanceled || task.IsFaulted)
-    //             {
-    //                 Debug.Log(task.Exception);
-    //             }
-    //
-    //             else
-    //             {
-    //                 gameSessionPath = db.RootReference.Child("game session").Child(GameManager.gameSessionID);
-    //                 
-    //                 gameSessionPath.ValueChanged -= ListenForPlayers;
-    //                 gameSessionPath.ValueChanged += ListenForPlayers;
-    //                 Debug.Log("Success! Data was written to: " + path);
-    //             }
-    //
-    //         });
-    // }
-
     public void JoinGame(string sessionID)
     {
         GameManager.gameSessionID = sessionID;

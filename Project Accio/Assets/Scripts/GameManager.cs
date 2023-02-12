@@ -33,9 +33,9 @@ public class GameManager : MonoBehaviour
     public Sequence sequence;
     public Timer timer;
     
-    float enemyReactionTime;
-    int enemySequencePosition;
-    bool enemyCreatedCorrectSymbol;
+    private float enemyReactionTime;
+    private int enemySequencePosition;
+    private bool enemyCreatedCorrectSymbol;
     
 
     public static string gameSessionID;
@@ -280,13 +280,15 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDeath()
     {
-        if (healthManager.midPoint.transform.position == healthManager.playerPosition.transform.position)
+        if (healthManager.midPoint.transform.position != healthManager.enemyPosition.transform.position)
         {
             gameOverText.text = "Avada Kedavra, bitch!";
+            gameOverText.color = new Color(255, 87, 20);
         }
         else
         {
             gameOverText.text = "Congratulations, you killed someone!";
+            gameOverText.color = new Color(228, 255, 26);
         }
         gameOver.SetActive(true);
     }
@@ -296,6 +298,7 @@ public class GameManager : MonoBehaviour
         healthManager.StartPosition();
         gameOver.SetActive(false);
         sequence.NewSequence();
+        gameHasStarted = false;
     }
 
     public void ResetTimer()

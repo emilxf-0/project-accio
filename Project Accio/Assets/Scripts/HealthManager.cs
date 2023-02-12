@@ -12,7 +12,7 @@ public class HealthManager : MonoBehaviour
     public float playerHealth;
     public float currentHealth;
     public bool enemyMomentum;
-    public float damage = 0.25f;
+    public float damage = 0.10f;
 
     public GameObject midPoint;
     public GameObject enemyPosition;

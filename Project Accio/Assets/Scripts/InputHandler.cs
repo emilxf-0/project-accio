@@ -1,10 +1,12 @@
 
 using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class InputHandler : MonoBehaviour
 {
@@ -18,11 +20,36 @@ public class InputHandler : MonoBehaviour
 
     [SerializeField] private Transform publicGamesListHolder;
     public GameObject buttonPrefab;
-    
 
-
-    public void CreateNewGame(string gamekey)
+    readonly List<string> wizardList = new List<string>()
     {
+        "Merlin",
+        "Gandalf",
+        "Dumbledore",
+        "Harry Potter",
+        "Morgan le Fay",
+        "Doctor Strange",
+        "Ravenna",
+        "Radagast",
+        "The Sorcerer's Apprentice",
+        "The White Witch",
+        "The Evil Queen",
+        "Maleficent",
+        "Ursula",
+        "The Dark Wizard",
+        "The Wizard of Oz",
+        "The Wizard of Wonderland",
+        "The Wizard of Neverland",
+        "The Sorcerer Supreme",
+        "Elminster",
+        "Albus Percival Wulfric Brian Dumbledore"
+    };
+
+    //TODO Make sure that two sessions with the same name can't be generated
+    public void CreateNewGame()
+    {
+        var randomWizard = Random.Range(0, 20);
+        var gamekey = wizardList[randomWizard];
         DatabaseAPI.Instance.CreateGameSession(new GameInfo(gamekey, true));
     }
     
@@ -35,8 +62,8 @@ public class InputHandler : MonoBehaviour
 
         DatabaseAPI.Instance.LoadDataMultiple("game session/", ShowGames);
     }
-    
-    public void ShowGames(string json)
+
+    private void ShowGames(string json)
     {
         Debug.Log("The JSON is: " + json);
         var gameInfo = JsonUtility.FromJson<GameInfo>(json);
@@ -46,7 +73,7 @@ public class InputHandler : MonoBehaviour
 
         if (gameInfo.waitingForPlayers == false)
         {
-            // Don't list our own games or full games.
+            // Don't list full games.
             return;
         }
 
@@ -102,8 +129,6 @@ public class InputHandler : MonoBehaviour
         var password = userPassword.text;
         DatabaseAPI.Instance.SignIn(email, password);
     }
-
-    
 
     public void ShowPanel(string panelName)
     {
