@@ -12,12 +12,20 @@ public class HealthManager : MonoBehaviour
     public float playerHealth;
     public float currentHealth;
     public bool enemyMomentum;
+    public float damage = 0.25f;
+
+    public GameObject midPoint;
+    public GameObject enemyPosition;
+    public GameObject playerPosition;
+    
+
     public static event Action PlayerDeath; 
     
     void Start()
     {
         playerHealth = maxHealth / 2;
         currentHealth = playerHealth;
+        StartPosition();
     }
 
    
@@ -25,38 +33,29 @@ public class HealthManager : MonoBehaviour
     {
         slider.value = currentHealth;
 
-        while (GameManager.Instance.gameHasStarted == false)
+        if (GameManager.Instance.gameHasStarted == false)
         {
             return;
         }
         
         if (enemyMomentum)
         {
-            TakeDamage(0.01f);
+            MoveTowards(playerPosition.transform.position, damage);
         }
         else
         {
-            Heal(0.01f);
+            MoveTowards(enemyPosition.transform.position, damage);
         }
     }
 
-    public void TakeDamage(float damageTaken)
+    private void MoveTowards(Vector2 endPoint, float amountToMove)
     {
-        currentHealth -= damageTaken * Time.deltaTime;
-
-        if (currentHealth <= 0)
-        {
-            PlayerDeath.Invoke();
-        }
-    }
-
-    public void Heal(float hpToHeal)
-    {
-        currentHealth += hpToHeal * Time.deltaTime;
+        var toleranceLevel = 0.1f;
+        midPoint.transform.position = Vector2.Lerp(midPoint.transform.position, endPoint, amountToMove * Time.deltaTime);
         
-        if (currentHealth > maxHealth)
+        if (Vector2.Distance(midPoint.transform.position, endPoint) < toleranceLevel)
         {
-            currentHealth = playerHealth;
+            PlayerDeath?.Invoke();
         }
     }
 
@@ -68,7 +67,11 @@ public class HealthManager : MonoBehaviour
         }
         
         return false;
-        
+    }
+
+    public void StartPosition()
+    {
+        midPoint.transform.position = Vector3.Lerp(enemyPosition.transform.position, playerPosition.transform.position, 0.5f);
     }
 
 }

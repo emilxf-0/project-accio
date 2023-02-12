@@ -1,11 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -29,14 +24,23 @@ public class GameManager : MonoBehaviour
 
     private float lastEnemyTimestamp;
     private int lastEnemyPosition;
-    private float latestPlayerTimestamp;
+    public float latestPlayerTimestamp;
     
     public GameObject gameOver;
+    public TMP_Text gameOverText;
     public HealthManager healthManager;
+    public TouchInput touchInputHandler;
     public Sequence sequence;
     public Timer timer;
     
+    float enemyReactionTime;
+    int enemySequencePosition;
+    bool enemyCreatedCorrectSymbol;
     
+
+    public static string gameSessionID;
+
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -48,7 +52,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
     }
-    
+
     private void OnEnable()
     {
         HealthManager.PlayerDeath += PlayerDeath;
@@ -58,6 +62,14 @@ public class GameManager : MonoBehaviour
     {
         HealthManager.PlayerDeath -= PlayerDeath;
     }
+    
+    public enum Symbols
+    {
+        TRIANGLE,
+        SQUARE,
+        PENTAGRAM,
+        LIGHTNING
+    };
 
     private void Start()
     {
@@ -79,60 +91,187 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    public void SinglePlayerGame()
+    {
+        CompareTimestampWithComputer(ComputerEnemyTimeStamp(), GetPlayerTimeStamp());
+        Invoke(nameof(SinglePlayerGame), 0.5f);
+    }
+    
     private void InstantiateEnemyAction(PlayerInfo playerInfo)
     {
-            var enemyPlayerID = $"{playerInfo.playerID}";
-            var enemyReactionTime = float.Parse($"{playerInfo.playerReactionTime}");
-            var enemySequencePosition = int.Parse($"{playerInfo.sequencePosition}");
-
+        string enemyPlayerID = playerInfo.playerID;
+        
+        // Check if it's an enemy action or friendly action
         if (enemyPlayerID == playerID || enemyPlayerID == "0")
         {
             CheckIfPlayerShouldHaveMomentum();
             return;
         }
-
-        gameHasStarted = true;
-
-        CompareTimeStampsAndPosition(enemyReactionTime, GetPlayerTimeStamp(), enemySequencePosition);
+        
+        // Set the last known enemy data here
+        enemyReactionTime = playerInfo.playerReactionTime;
+        enemySequencePosition = playerInfo.sequencePosition;
+        enemyCreatedCorrectSymbol = playerInfo.createdCorrectSymbol;
+        
+        Debug.Log(enemyPlayerID);
+        Debug.Log(enemyReactionTime);
+        Debug.Log(enemySequencePosition);
+        Debug.Log(enemyCreatedCorrectSymbol);
+        
+        DecideWhoHasMomentum(enemyReactionTime, enemyCreatedCorrectSymbol, enemySequencePosition);
         lastEnemyTimestamp = enemyReactionTime;
-
         lastEnemyPosition = enemySequencePosition;
     }
 
-    public void CompareTimeStampsAndPosition(float enemyTimeStamp, float playerTimeStamp, int enemyPosition)
+    public void CompareTimestampWithComputer(float enemyTimeStamp, float playerTimeStamp)
     {
-
-        var timestampDifference = Mathf.Abs(playerTimeStamp - enemyTimeStamp);
-        var playerSequencePosition = sequence.sequencePosition;
-        
-        Debug.Log("Player stats are: " + playerTimeStamp + " and " + playerSequencePosition);
-        Debug.Log("Enemy stats are: " + enemyTimeStamp + " and " + enemyPosition);
-        Debug.Log("Enemy momentum is: " + healthManager.enemyMomentum);
-        
-        if (sequence.inputMatchSequence == false)
-        {
-            //TODO increase damage multiplier
-        }
-
-        if (playerSequencePosition < enemyPosition)
-        {
-            healthManager.enemyMomentum = true;
-        }
-        else if (latestPlayerTimestamp > enemyTimeStamp)
-        {
-            healthManager.enemyMomentum = true;
-        }
-        else
-        {
-            Debug.Log("Now I'm healing!");
-            healthManager.enemyMomentum = false;
-        }
-        
-        Debug.Log("And now Enemy momentum is: " + healthManager.enemyMomentum);
+        healthManager.enemyMomentum = enemyTimeStamp < playerTimeStamp;
     }
+
+    public void DecideWhoHasMomentum(float enemyTimeStamp, bool enemySymbolIsCorrect, int enemyPosition)
+    {
+        var playerSequencePosition = sequence.sequencePosition;
+
+        if (gameHasStarted == false && enemySymbolIsCorrect == false)
+            return;
+
+        // If both players misses nothing happens
+        if (enemySymbolIsCorrect == false && sequence.inputMatchSequence == false)
+        {
+            return;
+        }
+
+        if (enemySymbolIsCorrect == false)
+        {
+            return;
+        }
+        
+        gameHasStarted = true;
+        
+        if (enemySymbolIsCorrect && sequence.inputMatchSequence == false)
+        {
+            // If enemy already have momentum increase damage taken
+            if (healthManager.enemyMomentum)
+            {
+                //healthManager.damage += 0.1f;
+                return;
+            }
+            
+            // If enemy doesn't have momentum decrease damage dealt or lose momentum
+            if (enemyPosition < playerSequencePosition)
+            {
+                //healthManager.damage -= 0.1f;
+            }
+            else
+            {
+                healthManager.enemyMomentum = true;
+            }
+        }
+
+        if (enemySymbolIsCorrect && sequence.inputMatchSequence)
+        {
+            // If enemy is behind set momentum to false
+            if (enemyPosition < playerSequencePosition)
+            {
+                healthManager.enemyMomentum = false;
+            }
+            else if (enemyPosition == playerSequencePosition)
+            {
+                if (enemyTimeStamp > latestPlayerTimestamp)
+                {
+                    healthManager.enemyMomentum = false;
+                }
+                else if (enemyTimeStamp < latestPlayerTimestamp && healthManager.enemyMomentum)
+                {
+                    //healthManager.damage += 0.1f;
+                }
+                else
+                {
+                    healthManager.enemyMomentum = true;
+                }
+            }
+            else
+            {
+                healthManager.enemyMomentum = true;
+            }
+        }
+        
+    }
+
 
     public void CheckIfPlayerShouldHaveMomentum()
     {
+        var playerSequencePosition = sequence.sequencePosition;
+
+        if (gameHasStarted == false && sequence.inputMatchSequence == false)
+            return;
+
+        // If both players misses nothing happens
+        if (enemyCreatedCorrectSymbol == false && sequence.inputMatchSequence == false)
+        {
+            return;
+        }
+
+        if (sequence.inputMatchSequence == false)
+        {
+            return;
+        }
+        
+        gameHasStarted = true;
+        
+        if (sequence.inputMatchSequence && enemyCreatedCorrectSymbol == false)
+        {
+            // If player already have momentum increase damage dealt
+            if (healthManager.enemyMomentum == false)
+            {
+                //healthManager.damage += 0.1f;
+                return;
+            }
+            
+            // If enemy have momentum decrease damage taken or gain momentum
+            if (playerSequencePosition < enemySequencePosition)
+            {
+                //healthManager.damage -= 0.1f;
+            }
+            else
+            {
+                healthManager.enemyMomentum = true;
+            }
+        }
+
+        if (sequence.inputMatchSequence && enemyCreatedCorrectSymbol)
+        {
+            // If player is behind set enemy momentum to true
+            if (playerSequencePosition < enemySequencePosition)
+            {
+                healthManager.enemyMomentum = true;
+            }
+            else if (playerSequencePosition == enemySequencePosition)
+            {
+                if (latestPlayerTimestamp > enemyReactionTime)
+                {
+                    healthManager.enemyMomentum = true;
+                }
+                else if (enemyReactionTime > latestPlayerTimestamp && healthManager.enemyMomentum == false)
+                {
+                    //healthManager.damage += 0.1f;
+                }
+                else
+                {
+                    healthManager.enemyMomentum = false;
+                }
+            }
+            else
+            {
+                healthManager.enemyMomentum = false;
+            }
+        }
+        
+        
+        if (healthManager.enemyMomentum == false)
+        {
+            
+        }
         if (lastEnemyPosition < sequence.sequencePosition)
         {
             healthManager.enemyMomentum = false;
@@ -141,12 +280,20 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDeath()
     {
+        if (healthManager.midPoint.transform.position == healthManager.playerPosition.transform.position)
+        {
+            gameOverText.text = "Avada Kedavra, bitch!";
+        }
+        else
+        {
+            gameOverText.text = "Congratulations, you killed someone!";
+        }
         gameOver.SetActive(true);
     }
 
     public void ResetGame()
     {
-        healthManager.currentHealth = healthManager.maxHealth;
+        healthManager.StartPosition();
         gameOver.SetActive(false);
         sequence.NewSequence();
     }
@@ -162,10 +309,10 @@ public class GameManager : MonoBehaviour
     }
 
     //This is for SinglePlayer mode
-    public float EnemyHitPoints()
+    public float ComputerEnemyTimeStamp()
     {
-        var hitPoints = 0.1f;
-        return hitPoints;
+        var computerTimeStamp = latestPlayerTimestamp + (Random.Range(0.02f, 0.4f));
+        return computerTimeStamp;
     }
 
 }

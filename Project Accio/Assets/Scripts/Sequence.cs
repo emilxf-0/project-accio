@@ -8,12 +8,12 @@ using Random = UnityEngine.Random;
 
 public class Sequence : MonoBehaviour
 {
-    public List<string> currentSequence = new();
-    public List<Image> currentItemImage = new();
+    public List<GameManager.Symbols> currentSequence = new();
+    public List<SpriteRenderer> currentItemImage = new();
     public GameObject sequenceItemPrefab;
     public Transform sequenceTransform;
     
-    public string currentSequenceItem;
+    public GameManager.Symbols currentSequenceItem;
     public bool inputMatchSequence;
     public int sequencePosition = 0;
     
@@ -21,7 +21,7 @@ public class Sequence : MonoBehaviour
 
     private void Start()
     {
-        CreateSequence(4);
+        CreateSequence(1);
     }
 
     private void Update()
@@ -32,43 +32,45 @@ public class Sequence : MonoBehaviour
         }
     }
 
-    public void CreateSequence(int lengthOfSequence)
+    private void CreateSequence(int lengthOfSequence)
     {
         for (int i = 0; i < lengthOfSequence; i++)
         {
-            var randomDirection = Random.Range(0, 3);
-            var newArrow = Instantiate(sequenceItemPrefab, transform.position, Quaternion.identity);
+            var randomDirection = Random.Range(0, 4);
+            var newSymbol = Instantiate(sequenceItemPrefab, transform.position, Quaternion.identity);
             
-            newArrow.transform.SetParent(sequenceTransform, false);
-            newArrow.GetComponent<Image>().sprite = newArrow.GetComponent<SequenceItem>().possibleActions[randomDirection];
+            newSymbol.transform.SetParent(sequenceTransform, true);
+            newSymbol.GetComponent<SpriteRenderer>().sprite = newSymbol.GetComponent<SequenceItem>().possibleActions[randomDirection];
             //newArrow.GetComponent<SequenceItem>().sequenceID = i; //Sets the sequenceitemID to current position
             
-            currentItemImage.Add(newArrow.GetComponent<Image>());
+            currentItemImage.Add(newSymbol.GetComponent<SpriteRenderer>());
 
             switch (randomDirection)
             {
                 case 0:
-                    currentSequence.Add("right");
+                    currentSequence.Add(GameManager.Symbols.TRIANGLE);
                     break;
                 case 1:
-                    currentSequence.Add("left");
+                    currentSequence.Add(GameManager.Symbols.SQUARE);
                     break;
                 case 2:
-                    currentSequence.Add("up");
+                    currentSequence.Add(GameManager.Symbols.PENTAGRAM);
                     break;
                 case 3:
-                    currentSequence.Add("down");
+                    currentSequence.Add(GameManager.Symbols.LIGHTNING);
                     break;
             }
 
         }
     }
     
-    public void CompareInputWithSequence(string buttonID)
+    public void CompareInputWithSequence(bool symbolsMatch)
     {
+        Debug.Log("Sequence is: " + sequencePosition);
         sequencePosition++;
+        Debug.Log("And now sequence is: " + sequencePosition);
         
-        if (buttonID == currentSequenceItem)
+        if (symbolsMatch)
         {
             inputMatchSequence = true;
             currentItemImage[item].color = Color.green;
@@ -82,7 +84,7 @@ public class Sequence : MonoBehaviour
         UpdateSequence();
     }
 
-    public void UpdateSequence()
+    private void UpdateSequence()
     {
         if (item != currentSequence.Count - 1)
         {
@@ -100,17 +102,15 @@ public class Sequence : MonoBehaviour
         currentSequence.Clear();
         currentItemImage.Clear();
         DestroySequence();
-        CreateSequence(4);
+        CreateSequence(1);
     }
 
-    public void DestroySequence()
+    private void DestroySequence()
     {
         foreach (Transform child in sequenceTransform)
         {
             Destroy(child.gameObject);
         }
     }
-    
-    
-    
+
 }

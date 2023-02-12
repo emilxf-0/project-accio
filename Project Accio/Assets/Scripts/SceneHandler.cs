@@ -11,17 +11,19 @@ public class SceneHandler : MonoBehaviour
     {
         if (SceneManager.GetSceneByName("Matchmaking").isLoaded)
         {
-            Invoke(nameof(ConnectToGame), 2f);
+            //Invoke(nameof(ConnectToGame), 2f);
         }
     }
 
     private void OnEnable()
     {
+        DatabaseAPI.ConnectToGame += ConnectToGame;
         DatabaseAPI.LoginSuccessful += LoginSuccessful;
     }
 
     private void OnDisable()
     {
+        DatabaseAPI.ConnectToGame -= ConnectToGame;
         DatabaseAPI.LoginSuccessful -= LoginSuccessful;
     }
 
@@ -33,11 +35,16 @@ public class SceneHandler : MonoBehaviour
     public void LoginSuccessful()
     {
         SceneManager.LoadScene("MatchMaking");
+        Debug.Log("I'm loaded!");
     }
-    
 
     public void ConnectToGame()
     {
         SceneManager.LoadScene("GamePlay");
+    }
+
+    public void GoToLoadingScene()
+    {
+        SceneManager.LoadScene("Loading Scene");
     }
 }
