@@ -12,11 +12,13 @@ public class HealthManager : MonoBehaviour
     public float playerHealth;
     public float currentHealth;
     public bool enemyMomentum;
+    public float damage = 0.25f;
 
     public GameObject midPoint;
     public GameObject enemyPosition;
     public GameObject playerPosition;
     
+
     public static event Action PlayerDeath; 
     
     void Start()
@@ -31,38 +33,29 @@ public class HealthManager : MonoBehaviour
     {
         slider.value = currentHealth;
 
-        while (GameManager.Instance.gameHasStarted == false)
+        if (GameManager.Instance.gameHasStarted == false)
         {
             return;
         }
         
         if (enemyMomentum)
         {
-            TakeDamage(0.75f);
+            MoveTowards(playerPosition.transform.position, damage);
         }
         else
         {
-            Heal(0.75f);
+            MoveTowards(enemyPosition.transform.position, damage);
         }
     }
 
-    public void TakeDamage(float damageTaken)
+    private void MoveTowards(Vector2 endPoint, float amountToMove)
     {
-        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, playerPosition.transform.position, damageTaken * Time.deltaTime);
+        var toleranceLevel = 0.1f;
+        midPoint.transform.position = Vector2.Lerp(midPoint.transform.position, endPoint, amountToMove * Time.deltaTime);
         
-        if (midPoint.transform.position == playerPosition.transform.position)
+        if (Vector2.Distance(midPoint.transform.position, endPoint) < toleranceLevel)
         {
-            PlayerDeath.Invoke();
-        }
-    }
-
-    public void Heal(float hpToHeal)
-    {
-        midPoint.transform.position = Vector2.MoveTowards(midPoint.transform.position, enemyPosition.transform.position, hpToHeal * Time.deltaTime);
-        
-        if (midPoint.transform.position == enemyPosition.transform.position)
-        {
-            PlayerDeath.Invoke();
+            PlayerDeath?.Invoke();
         }
     }
 

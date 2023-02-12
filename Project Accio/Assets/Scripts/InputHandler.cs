@@ -55,12 +55,10 @@ public class InputHandler : MonoBehaviour
         newButton.onClick.AddListener(() => DatabaseAPI.Instance.JoinGame(gameInfo.gameSessionID));
         newButton.onClick.AddListener(() => SceneManager.LoadScene("GamePlay"));
     }
-    
-    
-    
+
     public void GetButtonInput(string id)
     {
-        GameManager.Instance.sequence.CompareInputWithSequence(id);
+        //GameManager.Instance.sequence.CompareInputWithSequence(id);
     }
 
     public void CompareTimeStamps()
@@ -86,7 +84,9 @@ public class InputHandler : MonoBehaviour
 
     public void ResetGame()
     {
+        GameManager.Instance.gameHasStarted = false;
         GameManager.Instance.ResetGame();
+        
     }
 
     public void RegNewUser()
@@ -103,26 +103,7 @@ public class InputHandler : MonoBehaviour
         DatabaseAPI.Instance.SignIn(email, password);
     }
 
-    public void SendAction()
-    {
-        var playerReaction = GameManager.Instance.GetPlayerTimeStamp();
-        var playerID = GameManager.Instance.playerID;
-        var sequencePosition = GameManager.Instance.sequence.sequencePosition;
-        var gameSessionID = GameManager.gameSessionID;
-
-        if (DatabaseAPI.Instance.singlePlayerGame)
-        {
-            GameManager.Instance.latestPlayerTimestamp = playerReaction;
-            GameManager.Instance.SinglePlayerGame();
-        }
-        else
-        {
-            DatabaseAPI.Instance.SendAction(new PlayerInfo(playerID, playerReaction, sequencePosition, gameSessionID), () =>
-            {
-                // Action was sent!
-            }, exception => { Debug.Log(exception); });
-        }
-    }
+    
 
     public void ShowPanel(string panelName)
     {
@@ -153,13 +134,6 @@ public class InputHandler : MonoBehaviour
                 break;
         }
     }
-
-    public void StartGame()
-    {
-        GameManager.Instance.gameHasStarted = true;
-    }
-
-
 
     public void SignOutFromGame()
     {

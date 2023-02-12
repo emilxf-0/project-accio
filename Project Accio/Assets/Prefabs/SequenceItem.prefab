@@ -46,10 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleActions:
-  - {fileID: 271668389, guid: 8d069c407a4a9a147afba0a1d86257d7, type: 3}
-  - {fileID: 174011265, guid: 8d069c407a4a9a147afba0a1d86257d7, type: 3}
-  - {fileID: 895921272, guid: 8d069c407a4a9a147afba0a1d86257d7, type: 3}
-  - {fileID: 1568203639, guid: 8d069c407a4a9a147afba0a1d86257d7, type: 3}
+  - {fileID: 21300000, guid: 632e6d98e5e519647809ff1b42fe3d9f, type: 3}
+  - {fileID: 21300000, guid: 0cd256d2d77168141a4a54518344c102, type: 3}
+  - {fileID: 21300000, guid: 670faf59a4ba5964385b6bc44b93c9e4, type: 3}
+  - {fileID: 21300000, guid: 5cc702aaadaef7140b41187f3756d9d2, type: 3}
 --- !u!212 &-7857597523981716448
 SpriteRenderer:
   m_ObjectHideFlags: 0
