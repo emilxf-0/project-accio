@@ -23,29 +23,17 @@ public class PlayerHandler : MonoBehaviour
         DatabaseAPI.Instance.LoadFromFirebase();
     }
 
-   
-
     public void LoadColor(string color)
     {
-        Debug.Log("LoadColor: " + color);
         float colorFloat = float.Parse(color);
-        Debug.Log("Float: " + colorFloat);
         slider.value = colorFloat;
-        Debug.Log("Slider value is: " + slider.value);
         playerColor.color = Color.HSVToRGB(slider.value, 0.85f,0.85f );
-        Debug.Log("Något är knas");
-    }
-
-    public void SetColorToBlue()
-    {
-        slider.value = 0.6f;
     }
 
     private void Update()
     {
         SetColor();
     }
-
 
     private void SetColor()
     {

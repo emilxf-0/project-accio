@@ -35,7 +35,6 @@ public class SceneHandler : MonoBehaviour
     public void LoginSuccessful()
     {
         SceneManager.LoadScene("MatchMaking");
-        Debug.Log("I'm loaded!");
     }
 
     public void ConnectToGame()

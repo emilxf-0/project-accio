@@ -11,12 +11,10 @@ public class TouchInput : MonoBehaviour
     private Timer timer;
     public new ParticleSystem particleSystem;
     
-    private float fadeTime = 0.3f;
+    private float fadeTime = 0.4f;
     private float fadeStartTime;
     private bool startFade;
     private GameManager.Symbols currentSymbol;
-    //private bool symbolsMatch;
-    private int x;
 
     private Vector3[] preDefinedSymbolPoints;
     private Vector3[] userSymbolPoints;
@@ -27,6 +25,7 @@ public class TouchInput : MonoBehaviour
     {
         currentSymbol = GameManager.Instance.sequence.currentSequenceItem;
         preDefinedSymbolPoints = new Vector3[preDefinedSymbol[(int)currentSymbol].positionCount];
+        
 
         if (Input.touchCount > 0)
         {
@@ -40,7 +39,7 @@ public class TouchInput : MonoBehaviour
                 Vector3 touchWorldPos = Camera.main.ScreenToWorldPoint(screenPos);
                 userInputPoints.Add(touchWorldPos);
                 
-                // Ugly hack to get better threshold values for the DTR algorithm
+                // Ugly hack to get better threshold values for the Dynamic Time Range algorithm
                 lineRenderer.positionCount = userInputPoints.Count;
                 lineRenderer.SetPositions(userInputPoints.ToArray());
                 
@@ -50,16 +49,18 @@ public class TouchInput : MonoBehaviour
             if (touch.phase == TouchPhase.Ended)
             {
                 particleSystem.Stop();
-                x++;
+              
                 userSymbolPoints = new Vector3[lineRenderer.positionCount];
                 fadeStartTime = Time.time;
                 startFade = true;
 
                 var cumulativeValue = Match();
+                
+                //This is for tweaking the pattern matching system
                 Debug.Log("The cumulative value is: " + cumulativeValue);
                 
                 GameManager.Instance.sequence.CompareInputWithSequence(CompareInputWithSymbol(currentSymbol));
-                Debug.Log("x is: " + x);
+               
                 SendPlayerInfo();
             }
 
@@ -73,7 +74,7 @@ public class TouchInput : MonoBehaviour
         FadeLine();
     }
     
-    void FadeLine()
+    private void FadeLine()
     {
         float timeSinceStart = Time.time - fadeStartTime;
         
