@@ -113,10 +113,6 @@ public class GameManager : MonoBehaviour
         enemySequencePosition = playerInfo.sequencePosition;
         enemyCreatedCorrectSymbol = playerInfo.createdCorrectSymbol;
         
-        Debug.Log(enemyPlayerID);
-        Debug.Log(enemyReactionTime);
-        Debug.Log(enemySequencePosition);
-        Debug.Log(enemyCreatedCorrectSymbol);
         
         DecideWhoHasMomentum(enemyReactionTime, enemyCreatedCorrectSymbol, enemySequencePosition);
         lastEnemyTimestamp = enemyReactionTime;
